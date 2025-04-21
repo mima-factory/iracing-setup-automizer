@@ -1,0 +1,20 @@
+{
+  "general": {
+    "season": "S2502",
+    "series": "IMSA",
+    "week": "W06",
+    "track": "Watkins Glen"
+  },
+  "mappings": [
+    {
+      "provider": "HYMO",
+      "pattern": "^([^/]+)\\/([^/]+)\\/",
+      "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/{season}-{series}/{week}-{track}"
+    },
+    {
+      "provider": "P1Doks",
+      "pattern": "...",
+      "destinationTemplate": "{base}/setups/{car}/{series}/{track}"
+    }
+  ]
+}

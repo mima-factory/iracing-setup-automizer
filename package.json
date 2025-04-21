@@ -4,11 +4,19 @@
   "description": "App to automize the extraction of setups into the iRacing folder structure.",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "dist": "electron-builder"
   },
   "author": "mjainta",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^35.2.0"
+    "electron": "^35.2.0",
+    "electron-builder": "^26.0.12"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "chokidar": "^4.0.3",
+    "fs-extra": "^11.3.0"
   }
 }
