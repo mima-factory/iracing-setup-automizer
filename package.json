@@ -1,0 +1,14 @@
+{
+  "name": "iracing-setup-automizer",
+  "version": "0.0.1",
+  "description": "App to automize the extraction of setups into the iRacing folder structure.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "mjainta",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^35.2.0"
+  }
+}
