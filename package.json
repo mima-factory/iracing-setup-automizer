@@ -12,7 +12,8 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^35.2.0",
-    "electron-builder": "^26.0.12"
+    "electron-builder": "^26.0.12",
+    "electron-reloader": "^1.2.3"
   },
   "dependencies": {
     "adm-zip": "^0.5.16",

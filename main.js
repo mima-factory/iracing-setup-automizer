@@ -16,6 +16,10 @@ const WATCH_DIRECTORY = path.join(__dirname, 'inbox');  // Place new ZIPs here
 //const BASE_DIRECTORY = 'C:\Users\Martin\ElectronProjects\iracing-setup-automizer\testDocuments';
 const BASE_DIRECTORY = path.join(__dirname, 'setup-dist');
 
+try {
+	require('electron-reloader')(module);
+} catch {}
+
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 600,
