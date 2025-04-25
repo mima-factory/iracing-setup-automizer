@@ -1,31 +1,30 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const fs = require('fs');
 const chokidar = require('chokidar');
 const AdmZip = require('adm-zip');
 const fse = require('fs-extra');
-const config = require('./config.json');
-const mappings = config.mappings;
-const season = config.general.season;
-const series = config.general.series;
-const week = config.general.week;
-const track = config.general.track;
+let configPath = path.join(__dirname, 'config.json');
+let config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+
+function saveConfigToDisk(newConfig) {
+  fs.writeFileSync(configPath, JSON.stringify(newConfig, null, 2));
+  config = newConfig;
+}
 
 let mainWindow;
-const WATCH_DIRECTORY = path.join(__dirname, 'inbox');  // Place new ZIPs here
+const WATCH_DIRECTORY = path.join(__dirname, 'inbox');
 //const BASE_DIRECTORY = 'C:/Users/DeinName/Documents/iRacing';
 //const BASE_DIRECTORY = 'C:\Users\Martin\ElectronProjects\iracing-setup-automizer\testDocuments';
 const BASE_DIRECTORY = path.join(__dirname, 'setup-dist');
 
-try {
-	require('electron-reloader')(module);
-} catch {}
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
-    width: 600,
-    height: 400,
+    width: 800,
+    height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
     }
   });
   mainWindow.loadFile('index.html');
@@ -34,7 +33,18 @@ function createMainWindow() {
 app.whenReady().then(() => {
   createMainWindow();
 
-  // Start watching for new ZIP files
+  // IPC handlers for loading and saving config
+  ipcMain.handle('load-config', async () => {
+    config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    return config;
+  });
+
+  ipcMain.handle('save-config', async (event, newConfig) => {
+    saveConfigToDisk(newConfig);
+    return true;
+  });
+
+  // Watch for new ZIP files
   chokidar.watch(WATCH_DIRECTORY, { ignoreInitial: true, depth: 0 })
     .on('add', async filePath => {
       if (!filePath.endsWith('.zip')) return;
@@ -44,7 +54,6 @@ app.whenReady().then(() => {
         mainWindow.webContents.send('log-message', `Processed successfully: ${path.basename(filePath)}`);
       } catch (error) {
         mainWindow.webContents.send('log-message', `Error: ${error.message}`);
-        // Optionally move to an 'Unsorted' folder
       }
     });
 });
@@ -53,37 +62,41 @@ async function handleZip(zipPath) {
   const zip = new AdmZip(zipPath);
   const entries = zip.getEntries();
 
-  for (let { entryName } of entries) {
-    for (let map of mappings) {
+  for (zipEntry of entries) {
+    let entryName = zipEntry.entryName;
+    mainWindow.webContents.send('log-message', `Processing entry: ${entryName}`);
+    // console.log({ zipEntry });
+    for (let map of config.mappings) {
       const regex = new RegExp(map.pattern);
       const match = entryName.match(regex);
-      // Only proceed if regex has captured both car and track
-      if (!match || match.length < 3) continue;
+      if (!match || match.length < 4) {
+        mainWindow.webContents.send('log-message', `No match for entry: ${entryName}`);
+        console.log({ match });
+        continue;
+      }
       const car = match[1];
-      // Build destination path
-      const destinationDir = map.destinationTemplate
+      const event = match[2];
+      const setupFilename = match[3];
+      mainWindow.webContents.send('log-message', `Found match: ${car}, ${event}, ${setupFilename}`);
+
+      const dest = map.destinationTemplate
+        // .replace('{base}', config.general.base)
         .replace('{base}', BASE_DIRECTORY)
         .replace('{car}', car)
-        .replace('{season}', season)
-        .replace('{series}', series)
-        .replace('{week}', week)
-        .replace('{track}', track)
-        .replace('/', '\\'); 
-      console.log(`Destination template: ${map.destinationTemplate}`);
-      console.log(`Destination: ${destinationDir}`);
-      // Extract all files to a temp directory
+        .replace('{season}', config.general.season)
+        .replace('{series}', config.general.series)
+        .replace('{week}', config.general.week)
+        .replace('{track}', config.general.track)
+        .replace('\\', path.sep);
+console.log({ dest });
       const tempDir = path.join(app.getPath('temp'), `setup-${Date.now()}`);
-      zip.extractAllTo(tempDir, true);
-
-      // Ensure destination exists and copy files
-      await fse.ensureDir(destinationDir);
-      await fse.copy(tempDir, destinationDir, { overwrite: true });
-
-      return;
+      await fse.ensureDir(dest);
+      zip.extractEntryTo(zipEntry, dest, false, true);
+      // await fse.copy(tempDir, dest, { overwrite: true });
+      // return;
     }
   }
-
-  throw new Error('No matching mapping found for any provider');
+  throw new Error('No matching mapping found');
 }
 
 app.on('window-all-closed', () => {

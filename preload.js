@@ -1,4 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('api', {
-  onLogMessage: callback => ipcRenderer.on('log-message', (_, message) => callback(message))
+  onLogMessage: cb => ipcRenderer.on('log-message', (_, msg) => cb(msg)),
+  loadConfig: () => ipcRenderer.invoke('load-config'),
+  saveConfig: cfg => ipcRenderer.invoke('save-config', cfg)
 });

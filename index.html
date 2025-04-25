@@ -1,14 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>iRacing Setup Syncer</title>
+  <link rel="stylesheet" href="bootstrap-5.3.5-dist/css/bootstrap.min.css">
 </head>
-<body>
-  <h1>Setup Syncer</h1>
-  <pre id="logOutput"></pre>
+<body class="bg-light">
+  <div class="container py-5">
+    <h1 class="text-center mb-4">iRacing Setup Syncer</h1>
+
+    <section class="mb-5">
+      <h2 class="h4">Logs</h2>
+      <pre id="logOutput" class="p-3 bg-white border rounded" style="height:200px; overflow:auto;"></pre>
+    </section>
+
+    <section>
+      <h2 class="h4">Settings</h2>
+      <form id="configForm" class="bg-white p-4 border rounded">
+        <div class="mb-3">
+          <label class="form-label">Season:</label>
+          <input name="season" type="text" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Series:</label>
+          <input name="series" type="text" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Week:</label>
+          <input name="week" type="text" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Track:</label>
+          <input name="track" type="text" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Base Directory:</label>
+          <input name="base" type="text" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Mappings (JSON):</label>
+          <textarea name="mappings" rows="10" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Settings</button>
+      </form>
+    </section>
+  </div>
   <script src="renderer.js"></script>
 </body>
 </html>
