@@ -1,20 +1,13 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const fs = require('fs');
 const chokidar = require('chokidar');
 const AdmZip = require('adm-zip');
 const fse = require('fs-extra');
-let configPath = path.join(__dirname, 'config.json');
-let config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+const { config, loadConfig, saveConfigToDisk } = require('./services/config');
 
 try {
 	require('electron-reloader')(module);
 } catch {}
-
-function saveConfigToDisk(newConfig) {
-  fs.writeFileSync(configPath, JSON.stringify(newConfig, null, 2));
-  config = newConfig;
-}
 
 let mainWindow;
 const WATCH_DIRECTORY = path.join(__dirname, 'inbox');
@@ -42,7 +35,7 @@ app.whenReady().then(() => {
 
   // IPC handlers for loading and saving config
   ipcMain.handle('load-config', async () => {
-    config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    loadConfig();
     return config;
   });
 
@@ -78,7 +71,6 @@ async function handleZip(zipPath) {
       const match = entryName.match(regex);
       if (!match || match.length < 4) {
         mainWindow.webContents.send('log-message', `No match for entry: ${entryName}`);
-        console.log({ match });
         continue;
       }
       const car = match.groups.car;
@@ -89,7 +81,6 @@ async function handleZip(zipPath) {
       mainWindow.webContents.send('log-message', `Found match: ${car}, ${track}, ${series}, ${seasonYear}, ${seasonNo}`);
 
       const dest = map.destinationTemplate
-        // .replace('{base}', config.general.base)
         .replace('{base}', BASE_DIRECTORY)
         .replace('{car}', car)
         .replace('{seasonYear}', seasonYear)
@@ -98,15 +89,11 @@ async function handleZip(zipPath) {
         .replace('{week}', config.general.week)
         .replace('{track}', config.general.track)
         .replace('\\', path.sep);
-console.log({ dest });
 
       await fse.ensureDir(dest);
       zip.extractEntryTo(zipEntry, dest, false, true);
-      // await fse.copy(tempDir, dest, { overwrite: true });
-      // return;
     }
   }
-  throw new Error('No matching mapping found');
 }
 
 app.on('window-all-closed', () => {
