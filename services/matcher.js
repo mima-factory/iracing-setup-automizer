@@ -88,4 +88,5 @@ function findMatchForNormalizedValue(normalizedValue, map) {
 
 module.exports = {
   matchSetupPath,
+  normalizeValue,
 };
