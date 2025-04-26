@@ -4,10 +4,7 @@ const chokidar = require('chokidar');
 const AdmZip = require('adm-zip');
 const fse = require('fs-extra');
 const { config, loadConfig, saveConfigToDisk } = require('./services/config');
-
-try {
-	require('electron-reloader')(module);
-} catch {}
+const { matchSetupPath } = require('./services/matcher');
 
 let mainWindow;
 const WATCH_DIRECTORY = path.join(__dirname, 'inbox');
@@ -66,28 +63,25 @@ async function handleZip(zipPath) {
     let entryName = zipEntry.entryName;
     mainWindow.webContents.send('log-message', `Processing entry: ${entryName}`);
 
-    for (let map of config.mappings.setups) {
-      const regex = new RegExp(map.pattern);
-      const match = entryName.match(regex);
-      if (!match || match.length < 4) {
-        mainWindow.webContents.send('log-message', `No match for entry: ${entryName}`);
+    for (let setupJsonMap of config.mappings.setups) {
+      let matchResult = matchSetupPath(entryName, config.mappings.setups[0]);
+      if (matchResult.result === false) {
+        mainWindow.webContents.send('log-message', `Could not match entry: ${entryName}`);
+        matchResult.validationErrors.forEach(error => {
+          mainWindow.webContents.send('log-message', `Validation error: ${error}`);
+        });
         continue;
       }
-      const car = match.groups.car;
-      const track = match.groups.track;
-      const series = match.groups.series;
-      const seasonYear = match.groups.seasonYear;
-      const seasonNo = match.groups.seasonNo;
-      mainWindow.webContents.send('log-message', `Found match: ${car}, ${track}, ${series}, ${seasonYear}, ${seasonNo}`);
 
-      const dest = map.destinationTemplate
+      const match = matchResult.matches;
+      const dest = setupJsonMap.destinationTemplate
         .replace('{base}', BASE_DIRECTORY)
-        .replace('{car}', car)
-        .replace('{seasonYear}', seasonYear)
-        .replace('{seasonNo}', seasonNo)
-        .replace('{series}', series)
+        .replace('{car}', match.car)
+        .replace('{seasonYear}', match.seasonYear)
+        .replace('{seasonNo}', match.seasonNo)
+        .replace('{series}', match.series)
         .replace('{week}', config.general.week)
-        .replace('{track}', config.general.track)
+        .replace('{track}', match.track)
         .replace('\\', path.sep);
 
       await fse.ensureDir(dest);
