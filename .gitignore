@@ -1,6 +1,7 @@
 # iracing-setup-automizer special exclusions
 setup-dist/
 inbox/
+bootstrap-*-dist/
 
 # Logs
 logs
