@@ -6,7 +6,9 @@ function matchSetupPath(setupPath, map) {
   const regex = new RegExp(map.pattern);
   const match = setupPath.match(regex);
   if (!match || match.length < 6) {
+
     console.error(`No pattern match for entry: ${setupPath}`);
+    console.log(`match: ${match}`);
     return {
       "result": false,
       "validationErrors": ["No pattern match for entry: " + setupPath],
@@ -22,7 +24,7 @@ function matchSetupPath(setupPath, map) {
   const trackMap = generateMap(config.mappings.tracks);
   const seriesMap = generateMap(config.mappings.series);
   const normalizedTrack = normalizeValue(parsedTrack);
-  const normalizedSeries = normalizeValue(parsedSeries);
+  const normalizedSeries = normalizeValue(parsedSeries, false);
   console.log('mapping parsed track to map', normalizedTrack, trackMap);
   console.log('mapping parsed series to map', normalizedSeries, seriesMap);
   const track = findMatchForNormalizedValue(normalizedTrack, trackMap);
@@ -57,16 +59,21 @@ function matchSetupPath(setupPath, map) {
  * @param {string} value - The value to normalize.
  * @return {string|null} - The normalized value or null if the input is undefined or null.
  */
-function normalizeValue(value) {
+function normalizeValue(value, replaceNumbers = true) {
   if (value === undefined || value === null) return null;
   if (typeof value === 'string') {
-    return value
+    let normalizedValue = value
       .trim()
       .toLowerCase()
       .replace(/-/g, ' ')
-      .replace(/_/g, ' ')
-      .replace(/[0-9]+/g, ' ')
-      .replace(/\s+/g, ' ');
+      .replace(/_/g, ' ');
+    if (replaceNumbers) {
+        normalizedValue = normalizedValue.replace(/[0-9]+/g, ' ')
+    }
+    normalizedValue = normalizedValue.replace(/\s+/g, ' ')
+      .replace(/^\s|\s$/g, '');
+
+    return normalizedValue
   }
   return value;
 }

@@ -58,20 +58,31 @@ app.whenReady().then(() => {
 async function handleZip(zipPath) {
   const zip = new AdmZip(zipPath);
   const entries = zip.getEntries();
+  let matchedFound = 0;
+  let matchedNotFound = 0;
+  let copiedFiles = 0;
+  let skippedFiles = 0;
 
   for (zipEntry of entries) {
     let entryName = zipEntry.entryName;
-    mainWindow.webContents.send('log-message', `Processing entry: ${entryName}`);
+    // mainWindow.webContents.send('log-message', `Processing entry: ${entryName}`);
+    console.log(`Processing entry: ${entryName}`);
+    let found = false;
 
     for (let setupJsonMap of config.mappings.setups) {
-      let matchResult = matchSetupPath(entryName, config.mappings.setups[0]);
+      // mainWindow.webContents.send('log-message', `Matching against setup map: ${setupJsonMap.name}`);
+      let matchResult = matchSetupPath(entryName, setupJsonMap);
       if (matchResult.result === false) {
-        mainWindow.webContents.send('log-message', `Could not match entry: ${entryName}`);
+        // mainWindow.webContents.send('log-message', `Could not match entry: ${entryName}`);
+        console.log(`Could not match entry: ${entryName}`);
         matchResult.validationErrors.forEach(error => {
-          mainWindow.webContents.send('log-message', `Validation error: ${error}`);
+          // mainWindow.webContents.send('log-message', `Validation error: ${error}`);
+          console.log(`Validation error: ${error}`);
         });
         continue;
       }
+      found = true;
+      matchedFound++;
 
       const match = matchResult.matches;
       const dest = setupJsonMap.destinationTemplate
@@ -85,9 +96,28 @@ async function handleZip(zipPath) {
         .replace('\\', path.sep);
 
       await fse.ensureDir(dest);
-      zip.extractEntryTo(zipEntry, dest, false, true);
+      if (await fse.pathExists(path.join(dest, zipEntry.entryName))) {
+        // mainWindow.webContents.send('log-message', `Entry already exists: ${entryName}`);
+        console.log(`Entry already exists: ${entryName}`);
+        skippedFiles++;
+        continue;
+      } else {
+        zip.extractEntryTo(zipEntry, dest, false, true);
+        copiedFiles++;
+      }
+    }
+
+    if (!found) {
+      matchedNotFound++;
     }
   }
+
+  mainWindow.webContents.send('log-message', `Processing completed for: ${path.basename(zipPath)}`);
+  mainWindow.webContents.send('log-message', `Matched found: ${matchedFound}`);
+  mainWindow.webContents.send('log-message', `Matched not found: ${matchedNotFound}`);
+  mainWindow.webContents.send('log-message', `Copied files: ${copiedFiles}`);
+  mainWindow.webContents.send('log-message', `Skipped files: ${skippedFiles}`);
+  mainWindow.webContents.send('log-message', '------------------------------------');
 }
 
 app.on('window-all-closed', () => {

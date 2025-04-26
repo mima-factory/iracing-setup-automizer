@@ -12,23 +12,58 @@
         "provider": "HYMO",
         "pattern": "^(?<car>[^\\/]+)\\/(?<track>[^\\/]+)\\/.*HYMO\\_(?<series>[A-Z0-9a-z]+)_(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]+)_[^\\/]+\\.sto$",
         "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-{series}/{week}-{track}"
+      },
+      {
+        "provider": "P1Doks",
+        "pattern": "^(?<car>[^\\/]+)\\/20(?<seasonYear>[0-9]{2}) - S(?<seasonNo>[0-9]+)\\/(?<track>[^\\/]+) - .* (?<series>[A-Z0-9a-z]+)\\/.*P1Doks\\_[A-Z0-9a-z]+_[^\\/]+\\.sto$",
+        "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-{series}/{week}-{track}"
+      },
+      {
+        "provider": "P1Doks_single_word_series",
+        "pattern": "^(?<car>[^\\/]+)\\/20(?<seasonYear>[0-9]{2}) - S(?<seasonNo>[0-9]+)\\/(?<track>[^\\/]+) - (?<series>[A-Z0-9a-z]+)\\/.*P1Doks\\_[^\\/]+\\.sto$",
+        "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-{series}/{week}-{track}"
+      },
+      {
+        "provider": "P1Doks_BMW_GT4",
+        "pattern": "^(?<car>[^\\/]+)\\/20(?<seasonYear>[0-9]{2}) - S(?<seasonNo>[0-9]+)\\/(?<track>[^\\/]+) - (?<series>BMW GT4 Evo)\\/.*P1Doks\\_[A-Z0-9a-z]+_[^\\/]+\\.sto$",
+        "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-{series}/{week}-{track}"
+      },
+      {
+        "provider": "P1Doks_Ferrari_499p",
+        "pattern": "^(?<car>[^\\/]+)\\/20(?<seasonYear>[0-9]{2}) - S(?<seasonNo>[0-9]+)\\/(?<track>[^\\/]+) - (?<series>Ferrari 499p)\\/.*P1Doks\\_[A-Z0-9a-z]+_[^\\/]+\\.sto$",
+        "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-{series}/{week}-{track}"
       }
     ],
     "tracks": {
       "watkinsglen": "Watkins Glen",
       "watkins glen": "Watkins Glen",
-      "watkinsglen 2021 fullcourse": "Watkins Glen",
+      "watkinsglen fullcourse": "Watkins Glen",
+      "watkins boot": "Watkins Glen",
       "spa": "Spa",
       "spa bike": "Spa",
       "roadatlanta": "Road Atlanta",
-      "road atlanta": "Road Atlanta"
+      "roadatlanta full": "Road Atlanta",
+      "road atlanta": "Road Atlanta",
+      "road america": "Road America",
+      "imola": "Imola",
+      "oultonpark": "Oulton Park",
+      "oulton park": "Oulton Park",
+      "oulton": "Oulton Park"
     },
     "series": {
       "imsa": "IMSA",
+      "gtd": "IMSA",
+      "gtp": "IMSA",
+      "lmp2": "IMSA",
+      "499p": "IMSA",
       "pcup": "PCUP",
       "sportscar": "SPORTSCAR",
+      "gt4": "SPORTSCAR",
       "ftsc": "SPORTSCAR",
-      "gt3": "GT3"
+      "lmp3": "SPORTSCAR",
+      "bmw gt4 evo": "SPORTSCAR",
+      "gt3": "GT3",
+      "gte": "GTE"
     }
   }
 }
