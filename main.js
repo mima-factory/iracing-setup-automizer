@@ -7,6 +7,10 @@ const fse = require('fs-extra');
 let configPath = path.join(__dirname, 'config.json');
 let config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
+try {
+	require('electron-reloader')(module);
+} catch {}
+
 function saveConfigToDisk(newConfig) {
   fs.writeFileSync(configPath, JSON.stringify(newConfig, null, 2));
   config = newConfig;
@@ -14,15 +18,18 @@ function saveConfigToDisk(newConfig) {
 
 let mainWindow;
 const WATCH_DIRECTORY = path.join(__dirname, 'inbox');
-//const BASE_DIRECTORY = 'C:/Users/DeinName/Documents/iRacing';
-//const BASE_DIRECTORY = 'C:\Users\Martin\ElectronProjects\iracing-setup-automizer\testDocuments';
-const BASE_DIRECTORY = path.join(__dirname, 'setup-dist');
+let BASE_DIRECTORY = path.join(__dirname, config.general.iracingSetupsFolder);
+
+if (!app.isPackaged) {
+  // If the app is not packaged, it is dev mode => use the setup-dist/ directory in the project folder
+  BASE_DIRECTORY = path.join(__dirname, 'setup-dist');
+}
 
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1024,
+    height: 780,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     }
@@ -65,8 +72,8 @@ async function handleZip(zipPath) {
   for (zipEntry of entries) {
     let entryName = zipEntry.entryName;
     mainWindow.webContents.send('log-message', `Processing entry: ${entryName}`);
-    // console.log({ zipEntry });
-    for (let map of config.mappings) {
+
+    for (let map of config.mappings.setups) {
       const regex = new RegExp(map.pattern);
       const match = entryName.match(regex);
       if (!match || match.length < 4) {
@@ -74,22 +81,25 @@ async function handleZip(zipPath) {
         console.log({ match });
         continue;
       }
-      const car = match[1];
-      const event = match[2];
-      const setupFilename = match[3];
-      mainWindow.webContents.send('log-message', `Found match: ${car}, ${event}, ${setupFilename}`);
+      const car = match.groups.car;
+      const track = match.groups.track;
+      const series = match.groups.series;
+      const seasonYear = match.groups.seasonYear;
+      const seasonNo = match.groups.seasonNo;
+      mainWindow.webContents.send('log-message', `Found match: ${car}, ${track}, ${series}, ${seasonYear}, ${seasonNo}`);
 
       const dest = map.destinationTemplate
         // .replace('{base}', config.general.base)
         .replace('{base}', BASE_DIRECTORY)
         .replace('{car}', car)
-        .replace('{season}', config.general.season)
-        .replace('{series}', config.general.series)
+        .replace('{seasonYear}', seasonYear)
+        .replace('{seasonNo}', seasonNo)
+        .replace('{series}', series)
         .replace('{week}', config.general.week)
         .replace('{track}', config.general.track)
         .replace('\\', path.sep);
 console.log({ dest });
-      const tempDir = path.join(app.getPath('temp'), `setup-${Date.now()}`);
+
       await fse.ensureDir(dest);
       zip.extractEntryTo(zipEntry, dest, false, true);
       // await fse.copy(tempDir, dest, { overwrite: true });

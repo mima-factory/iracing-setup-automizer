@@ -2,15 +2,33 @@
   "general": {
     "season": "S2502",
     "series": "IMSA",
-    "week": "W06",
+    "week": "W07",
     "track": "Watkins Glen",
-    "base": "setup-dist"
+    "iracingSetupsFolder": "setup-dist"
   },
-  "mappings": [
-    {
-      "provider": "HYMO",
-      "pattern": "^([^\\/]+)\\/([^\\/]+)\\/([^\\/]+\\.sto)$",
-      "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/{season}-{series}/{week}-{track}"
+  "mappings": {
+    "setups": [
+      {
+        "provider": "HYMO",
+        "pattern": "^(?<car>[^\\/]+)\\/(?<track>[^\\/]+)\\/.*HYMO\\_(?<series>[A-Z0-9a-z]+)_(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]+)_[^\\/]+\\.sto$",
+        "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-{series}/{week}-{track}"
+      }
+    ],
+    "tracks": {
+      "watkinsglen": "Watkins Glen",
+      "watkins glen": "Watkins Glen",
+      "watkinsglen 2021 fullcourse": "Watkins Glen",
+      "spa": "Spa",
+      "spa bike": "Spa",
+      "roadatlanta": "Road Atlanta",
+      "road atlanta": "Road Atlanta"
+    },
+    "series": {
+      "imsa": "IMSA",
+      "pcup": "PCUP",
+      "sportscar": "SPORTSCAR",
+      "ftsc": "SPORTSCAR",
+      "gt3": "GT3"
     }
-  ]
+  }
 }

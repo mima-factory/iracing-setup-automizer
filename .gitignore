@@ -1,7 +1,6 @@
 # iracing-setup-automizer special exclusions
 setup-dist/
-setup*.zip
-Setup*.zip
+inbox/
 
 # Logs
 logs
