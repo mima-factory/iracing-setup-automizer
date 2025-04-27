@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,46 +8,63 @@
   <title>iRacing Setup Syncer</title>
   <link rel="stylesheet" href="assets/bootstrap.min.css">
 </head>
+
 <body class="bg-light">
   <div class="container py-5">
-    <h1 class="text-center mb-4">iRacing Setup Automizer</h1>
+    <h1 class="text-center mb-4 text-primary">iRacing Setup Automizer</h1>
 
     <section class="mb-5">
-      <h2 class="h4">Logs</h2>
-      <pre id="logOutput" class="p-3 bg-white border rounded" style="height:200px; overflow:auto;"></pre>
+      <h2 class="h4 text-secondary">Settings (fill this out)</h2>
+      <form id="configForm" class="bg-white p-4 border rounded shadow-sm">
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">Season Week:</label>
+          <select id="seasonWeekSelect" name="seasonWeek" class="form-select" placeholder="Enter the season week">
+            <option value="W00">Choose a week</option>
+            <option value="W01">Week 1</option>
+            <option value="W02">Week 2</option>
+            <option value="W03">Week 3</option>
+            <option value="W04">Week 4</option>
+            <option value="W05">Week 5</option>
+            <option value="W06">Week 6</option>
+            <option value="W07">Week 7</option>
+            <option value="W08">Week 8</option>
+            <option value="W09">Week 9</option>
+            <option value="W10">Week 10</option>
+            <option value="W11">Week 11</option>
+            <option value="W12">Week 12</option>
+            <option value="W13">Week 13</option>
+            <option value="W14">Week 14</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <p class="text-muted">
+            The app will copy parsed setups from the given .zip files into this directory!<br>
+            <b>Note:</b> Do not provide the real iRacing directory if you are unsure of what gets extracted! Better is
+            to use an empty directory, and check what it does first.
+          </p>
+          <button id="selectDirectory" type="button" class="btn btn-secondary">Choose Directory</button>
+          <input id="selectedDirectory" type="text" class="form-control mt-2" readonly placeholder="No directory selected" />
+        </div>
+      </form>
+    </section>
+
+    <section class="mb-5">
+      <h2 class="h4 text-secondary">Logs</h2>
+      <pre id="logOutput" class="p-3 bg-white border rounded shadow-sm" style="height:200px; overflow:auto;">No logs yet...
+</pre>
     </section>
 
     <section>
-      <h2 class="h4">Settings</h2>
-      <form id="configForm" class="bg-white p-4 border rounded">
-        <div class="mb-3">
-          <label class="form-label">Season:</label>
-          <input name="season" type="text" class="form-control" />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Series:</label>
-          <input name="series" type="text" class="form-control" />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Week:</label>
-          <input name="week" type="text" class="form-control" />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Track:</label>
-          <input name="track" type="text" class="form-control" />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Base Directory:</label>
-          <input name="base" type="text" class="form-control" />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Mappings (JSON):</label>
-          <textarea name="mappings" rows="10" class="form-control"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Save Settings</button>
-      </form>
+      <div class="mb-3">
+        <h2 class="h4 text-secondary">Mappings (JSON):</h2>
+        <p class="text-muted">Mappings are used to map the iRacing setup names to the actual car names. The current config looks as follows:</p>
+        <textarea id="mappingsTextarea" rows="10" class="form-control" readonly placeholder="Mappings will appear here"></textarea>
+      </div>
     </section>
   </div>
   <script src="renderer.js"></script>
 </body>
+
 </html>

@@ -2,9 +2,9 @@
   "general": {
     "season": "S2502",
     "series": "IMSA",
-    "week": "W07",
+    "week": "W00",
     "track": "Watkins Glen",
-    "iracingSetupsFolder": "setup-dist"
+    "extractionDir": "extraction-dir"
   },
   "mappings": {
     "setups": [

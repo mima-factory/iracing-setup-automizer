@@ -1,20 +1,14 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const chokidar = require('chokidar');
 const AdmZip = require('adm-zip');
 const fse = require('fs-extra');
-const { config, loadConfig, saveConfigToDisk } = require('./services/config');
+const { config, loadConfig } = require('./services/config');
 const { matchSetupPath } = require('./services/matcher');
 
 let mainWindow;
 const WATCH_DIRECTORY = path.join(__dirname, 'inbox');
-let BASE_DIRECTORY = path.join(__dirname, config.general.iracingSetupsFolder);
-
-if (!app.isPackaged) {
-  // If the app is not packaged, it is dev mode => use the setup-dist/ directory in the project folder
-  BASE_DIRECTORY = path.join(__dirname, 'setup-dist');
-}
-
+let extractDirectory = path.join(__dirname, 'extraction-dir');
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
@@ -22,8 +16,11 @@ function createMainWindow() {
     height: 780,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-    }
+    },
   });
+  if (!app.isPackaged) {
+    mainWindow.webContents.openDevTools(); // Open DevTools for debugging during development
+  }
   mainWindow.loadFile('index.html');
 }
 
@@ -36,9 +33,22 @@ app.whenReady().then(() => {
     return config;
   });
 
-  ipcMain.handle('save-config', async (event, newConfig) => {
-    saveConfigToDisk(newConfig);
-    return true;
+  // IPC handler for selecting a directory
+  ipcMain.handle('select-directory', async () => {
+    console.log('Selecting directory...');
+    const result = await dialog.showOpenDialog({
+      properties: ['openDirectory']
+    });
+    console.log('Selected directory:', result);
+    const selectedPath = result.filePaths[0];
+    if (selectedPath) {
+      extractDirectory = selectedPath;
+      config.general.extractionDir = selectedPath; // Update the config with the new path
+      await fse.writeJson(path.join(__dirname, 'config.json'), config, { spaces: 2 });
+    }
+    console.log('Updated extractDirectory:', extractDirectory);
+    mainWindow.webContents.send('log-message', `Updated extraction directory: ${extractDirectory}`);
+    return result.canceled ? null : selectedPath;
   });
 
   // Watch for new ZIP files
@@ -46,6 +56,15 @@ app.whenReady().then(() => {
     .on('add', async filePath => {
       if (!filePath.endsWith('.zip')) return;
       mainWindow.webContents.send('log-message', `Detected new ZIP: ${path.basename(filePath)}`);
+      if (config.general.week == 'W00') {
+        mainWindow.webContents.send('log-message', 'Please set the week in the settings! Stopping processing...');
+        return;
+      }
+      if (app.isPackaged && !config.general.extractionDir == 'extraction-dir') {
+        mainWindow.webContents.send('log-message', 'Please set the extraction directory in the settings! Stopping processing...');
+        return;
+      }
+
       try {
         await handleZip(filePath);
         mainWindow.webContents.send('log-message', `Processed successfully: ${path.basename(filePath)}`);
@@ -93,7 +112,7 @@ async function handleZip(zipPath) {
 
       const match = matchResult.matches;
       const dest = setupJsonMap.destinationTemplate
-        .replace('{base}', BASE_DIRECTORY)
+        .replace('{base}', extractDirectory)
         .replace('{car}', match.car)
         .replace('{seasonYear}', match.seasonYear)
         .replace('{seasonNo}', match.seasonNo)

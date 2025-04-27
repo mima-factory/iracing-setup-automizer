@@ -1,5 +1,5 @@
 # iracing-setup-automizer special exclusions
-setup-dist/
+extraction-dir/
 inbox/
 bootstrap-*-dist/
 
