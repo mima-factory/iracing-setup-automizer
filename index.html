@@ -2,84 +2,122 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>iRacing Setup Syncer</title>
-  <link rel="stylesheet" href="assets/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/bootstrap.min.css" />
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .card {
+      border-radius: 0.75rem;
+    }
+
+    .input-group .form-control[readonly] {
+      background-color: #e9ecef;
+    }
+
+    #logOutput {
+      font-family: Menlo, Monaco, monospace;
+      background-color: #ffffff;
+    }
+  </style>
 </head>
 
-<body class="bg-light">
-  <div class="container py-5">
-    <h1 class="text-center mb-4 text-primary">iRacing Setup Automizer</h1>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
+    <div class="container">
+      <a class="navbar-brand text-primary" href="#">iRacing Setup Automizer</a>
+    </div>
+  </nav>
 
-    <section>
-      <p>
-        This app will copy parsed setups from setup archives (supports .zip files) into an extraction directory.<br>
-        <b>Note:</b> Do not provide the real iRacing setups directory if you are unsure of how it works!
-        It could be better to use an empty directory, and check what it does first.
+  <div class="container">
+    <!-- Intro -->
+    <div class="mb-5 text-center">
+      <p class="lead">
+        Copy parsed setups from ZIP archives into your iRacing setups directory.<br />
+        <strong>Warning:</strong> If you’re unsure, point to an empty folder to see how it works first.
       </p>
-    </section>
+    </div>
 
-    <section class="mb-5">
-      <h2 class="h4 text-secondary">Settings (fill this out)</h2>
+    <!-- Settings Card -->
+    <div class="card mb-5 shadow-sm">
+      <div class="card-body">
+        <h2 class="h5 text-secondary mb-4">Settings</h2>
+        <div class="row g-3">
+          <!-- Season Week -->
+          <div class="col-md-3">
+            <label for="seasonWeekSelect" class="form-label fw-bold">Season Week</label>
+            <select id="seasonWeekSelect" class="form-select">
+              <option value="W00" disabled selected>Choose week...</option>
+              <option value="W01">Week 01</option>
+              <option value="W02">Week 02</option>
+              <option value="W03">Week 03</option>
+              <option value="W04">Week 04</option>
+              <option value="W05">Week 05</option>
+              <option value="W06">Week 06</option>
+              <option value="W07">Week 07</option>
+              <option value="W08">Week 08</option>
+              <option value="W09">Week 09</option>
+              <option value="W10">Week 10</option>
+              <option value="W11">Week 11</option>
+              <option value="W12">Week 12</option>
+              <option value="W13">Week 13</option>
+              <option value="W14">Week 14</option>
+            </select>
+          </div>
 
-      <div class="mb-3">
-        <label class="form-label fw-bold">1. Select Season Week:</label>
-        <select id="seasonWeekSelect" name="seasonWeek" class="form-select" placeholder="Enter the season week">
-          <option value="W00">Choose a week</option>
-          <option value="W01">Week 1</option>
-          <option value="W02">Week 2</option>
-          <option value="W03">Week 3</option>
-          <option value="W04">Week 4</option>
-          <option value="W05">Week 5</option>
-          <option value="W06">Week 6</option>
-          <option value="W07">Week 7</option>
-          <option value="W08">Week 8</option>
-          <option value="W09">Week 9</option>
-          <option value="W10">Week 10</option>
-          <option value="W11">Week 11</option>
-          <option value="W12">Week 12</option>
-          <option value="W13">Week 13</option>
-          <option value="W14">Week 14</option>
-        </select>
-      </div>
+          <!-- Extraction Directory -->
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Extraction Directory</label>
+            <div class="input-group">
+              <button id="selectDirectory" class="btn btn-outline-secondary">Browse...</button>
+              <input id="selectedDirectory" type="text" class="form-control" readonly placeholder="No directory selected" />
+            </div>
+          </div>
 
-      <div class="mb-3">
-        <span class="form-label fw-bold">2. Select Extraction directory:</span>
-        <button id="selectDirectory" type="button" class="btn btn-secondary">Choose Directory</button>
-        <input id="selectedDirectory" type="text" class="form-control mt-2" readonly
-          placeholder="No directory selected" />
-      </div>
-
-      <div class="mb-3">
-        <span class="form-label fw-bold">3. Select ZIP File:</span>
-        <button id="selectSetupArchive" type="button" class="btn btn-secondary">Choose Setup Archive</button>
-        <input id="selectedSetupArchive" type="text" class="form-control mt-2" readonly
-          placeholder="No setup archive selected" />
-        <div>
-          <p>The next step will extract the setup archive and parse the setups. Check the extraction directory for changes.</p>
+          <!-- Setup Archive & Process -->
+          <div class="col-md-5">
+            <label class="form-label fw-bold">Setup Archive</label>
+            <div class="input-group mb-2">
+              <button id="selectSetupArchive" class="btn btn-outline-secondary">Browse...</button>
+              <input id="selectedSetupArchive" type="text" class="form-control" readonly placeholder="No archive selected" />
+            </div>
+            <button id="processSetupArchiveButton" class="btn btn-primary w-100">Process Archive</button>
+          </div>
         </div>
-        <button id="processSetupArchiveButton" class="btn btn-primary mt-2">Process Setup Archive</button>
       </div>
-    </section>
+    </div>
 
-    <section class="mb-5">
-      <h2 class="h4 text-secondary">Logs</h2>
-      <pre id="logOutput" class="p-3 bg-white border rounded shadow-sm" style="height:200px; overflow:auto;">No logs yet...
-</pre>
-    </section>
-
-    <section>
-      <div class="mb-3">
-        <h2 class="h4 text-secondary">Mappings (JSON):</h2>
-        <p class="text-muted">Mappings are used to map the iRacing setup names to the actual car names. The current
-          config looks as follows:</p>
-        <textarea id="mappingsTextarea" rows="10" class="form-control" readonly
-          placeholder="Mappings will appear here"></textarea>
+    <!-- Logs Card -->
+    <div class="card mb-5 shadow-sm">
+      <div class="card-body">
+        <h2 class="h5 text-secondary mb-3">Logs</h2>
+        <pre id="logOutput" class="p-3 border rounded" style="height: 300px; overflow-y: auto;">No logs yet...</pre>
       </div>
-    </section>
+    </div>
+
+    <!-- Mappings Card -->
+    <div class="card mb-5 shadow-sm">
+      <div class="card-body">
+        <h2 class="h5 text-secondary mb-3">Mappings (JSON)</h2>
+        <p class="text-muted small mb-2">
+          Used to map ZIP paths to your Garage 61 folder structure.
+        </p>
+        <textarea id="mappingsTextarea" rows="8" class="form-control" readonly placeholder="Mappings will appear here"></textarea>
+      </div>
+    </div>
   </div>
+
   <script src="renderer.js"></script>
 </body>
 
