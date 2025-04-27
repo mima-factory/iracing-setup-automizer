@@ -13,41 +13,55 @@
   <div class="container py-5">
     <h1 class="text-center mb-4 text-primary">iRacing Setup Automizer</h1>
 
+    <section>
+      <p>
+        This app will copy parsed setups from setup archives (supports .zip files) into an extraction directory.<br>
+        <b>Note:</b> Do not provide the real iRacing setups directory if you are unsure of how it works!
+        It could be better to use an empty directory, and check what it does first.
+      </p>
+    </section>
+
     <section class="mb-5">
       <h2 class="h4 text-secondary">Settings (fill this out)</h2>
-      <form id="configForm" class="bg-white p-4 border rounded shadow-sm">
 
-        <div class="mb-3">
-          <label class="form-label fw-bold">Season Week:</label>
-          <select id="seasonWeekSelect" name="seasonWeek" class="form-select" placeholder="Enter the season week">
-            <option value="W00">Choose a week</option>
-            <option value="W01">Week 1</option>
-            <option value="W02">Week 2</option>
-            <option value="W03">Week 3</option>
-            <option value="W04">Week 4</option>
-            <option value="W05">Week 5</option>
-            <option value="W06">Week 6</option>
-            <option value="W07">Week 7</option>
-            <option value="W08">Week 8</option>
-            <option value="W09">Week 9</option>
-            <option value="W10">Week 10</option>
-            <option value="W11">Week 11</option>
-            <option value="W12">Week 12</option>
-            <option value="W13">Week 13</option>
-            <option value="W14">Week 14</option>
-          </select>
-        </div>
+      <div class="mb-3">
+        <label class="form-label fw-bold">1. Select Season Week:</label>
+        <select id="seasonWeekSelect" name="seasonWeek" class="form-select" placeholder="Enter the season week">
+          <option value="W00">Choose a week</option>
+          <option value="W01">Week 1</option>
+          <option value="W02">Week 2</option>
+          <option value="W03">Week 3</option>
+          <option value="W04">Week 4</option>
+          <option value="W05">Week 5</option>
+          <option value="W06">Week 6</option>
+          <option value="W07">Week 7</option>
+          <option value="W08">Week 8</option>
+          <option value="W09">Week 9</option>
+          <option value="W10">Week 10</option>
+          <option value="W11">Week 11</option>
+          <option value="W12">Week 12</option>
+          <option value="W13">Week 13</option>
+          <option value="W14">Week 14</option>
+        </select>
+      </div>
 
-        <div class="mb-3">
-          <p class="text-muted">
-            The app will copy parsed setups from the given .zip files into this directory!<br>
-            <b>Note:</b> Do not provide the real iRacing directory if you are unsure of what gets extracted! Better is
-            to use an empty directory, and check what it does first.
-          </p>
-          <button id="selectDirectory" type="button" class="btn btn-secondary">Choose Directory</button>
-          <input id="selectedDirectory" type="text" class="form-control mt-2" readonly placeholder="No directory selected" />
+      <div class="mb-3">
+        <span class="form-label fw-bold">2. Select Extraction directory:</span>
+        <button id="selectDirectory" type="button" class="btn btn-secondary">Choose Directory</button>
+        <input id="selectedDirectory" type="text" class="form-control mt-2" readonly
+          placeholder="No directory selected" />
+      </div>
+
+      <div class="mb-3">
+        <span class="form-label fw-bold">3. Select ZIP File:</span>
+        <button id="selectSetupArchive" type="button" class="btn btn-secondary">Choose Setup Archive</button>
+        <input id="selectedSetupArchive" type="text" class="form-control mt-2" readonly
+          placeholder="No setup archive selected" />
+        <div>
+          <p>The next step will extract the setup archive and parse the setups. Check the extraction directory for changes.</p>
         </div>
-      </form>
+        <button id="processSetupArchiveButton" class="btn btn-primary mt-2">Process Setup Archive</button>
+      </div>
     </section>
 
     <section class="mb-5">
@@ -59,8 +73,10 @@
     <section>
       <div class="mb-3">
         <h2 class="h4 text-secondary">Mappings (JSON):</h2>
-        <p class="text-muted">Mappings are used to map the iRacing setup names to the actual car names. The current config looks as follows:</p>
-        <textarea id="mappingsTextarea" rows="10" class="form-control" readonly placeholder="Mappings will appear here"></textarea>
+        <p class="text-muted">Mappings are used to map the iRacing setup names to the actual car names. The current
+          config looks as follows:</p>
+        <textarea id="mappingsTextarea" rows="10" class="form-control" readonly
+          placeholder="Mappings will appear here"></textarea>
       </div>
     </section>
   </div>

@@ -1,13 +1,11 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
-const chokidar = require('chokidar');
 const AdmZip = require('adm-zip');
 const fse = require('fs-extra');
 const { config, loadConfig } = require('./services/config');
 const { matchSetupPath } = require('./services/matcher');
 
 let mainWindow;
-const WATCH_DIRECTORY = path.join(__dirname, 'inbox');
 let extractDirectory = path.join(__dirname, 'extraction-dir');
 
 function createMainWindow() {
@@ -33,45 +31,76 @@ app.whenReady().then(() => {
     return config;
   });
 
+  // IPC handlers for loading and saving config
+  ipcMain.handle('select-week', async (_, selectedWeek) => {
+    config.general.week = selectedWeek;
+    mainWindow.webContents.send('log-message', `Selected week: ${selectedWeek}`);
+  });
+
   // IPC handler for selecting a directory
   ipcMain.handle('select-directory', async () => {
     console.log('Selecting directory...');
-    const result = await dialog.showOpenDialog({
+    const result = dialog.showOpenDialogSync({
       properties: ['openDirectory']
     });
     console.log('Selected directory:', result);
-    const selectedPath = result.filePaths[0];
+    const selectedPath = result[0];
     if (selectedPath) {
       extractDirectory = selectedPath;
       config.general.extractionDir = selectedPath; // Update the config with the new path
-      await fse.writeJson(path.join(__dirname, 'config.json'), config, { spaces: 2 });
     }
     console.log('Updated extractDirectory:', extractDirectory);
     mainWindow.webContents.send('log-message', `Updated extraction directory: ${extractDirectory}`);
     return result.canceled ? null : selectedPath;
   });
 
-  // Watch for new ZIP files
-  chokidar.watch(WATCH_DIRECTORY, { ignoreInitial: true, depth: 0 })
-    .on('add', async filePath => {
-      if (!filePath.endsWith('.zip')) return;
-      mainWindow.webContents.send('log-message', `Detected new ZIP: ${path.basename(filePath)}`);
-      if (config.general.week == 'W00') {
-        mainWindow.webContents.send('log-message', 'Please set the week in the settings! Stopping processing...');
-        return;
-      }
-      if (app.isPackaged && !config.general.extractionDir == 'extraction-dir') {
-        mainWindow.webContents.send('log-message', 'Please set the extraction directory in the settings! Stopping processing...');
-        return;
-      }
-
-      try {
-        await handleZip(filePath);
-        mainWindow.webContents.send('log-message', `Processed successfully: ${path.basename(filePath)}`);
-      } catch (error) {
-        mainWindow.webContents.send('log-message', `Error: ${error.message}`);
-      }
+  // IPC handler for selecting a setup archive
+  ipcMain.handle('select-setup-archive', async () => {
+    console.log('Selecting setup archive...');
+    const result = dialog.showOpenDialogSync({
+      properties: ['openFile', 'dontAddToRecent'],
+      buttonLabel: 'Select Setup Archive',
+      title: 'Select Setup Archive',
+      filters: [
+        { name: 'Archives', extensions: ['zip', 'gzip', 'tar'], },
+        { name: 'All Files', extensions: ['*'] }
+      ]
     });
+    console.log('Selected file:', result);
+    const selectedPath = result[0];
+    if (selectedPath) {
+      setupArchive = selectedPath;
+    }
+    mainWindow.webContents.send('log-message', `Selected setup archive: ${setupArchive}`);
+    return result.canceled ? null : selectedPath;
+  });
+
+  // IPC handler for processing a ZIP file
+  ipcMain.handle('process-zip-file', async (_, filePath) => {
+    mainWindow.webContents.send('log-message', `Processing file: ${filePath}`);
+
+    if (!filePath.endsWith('.zip')) {
+      mainWindow.webContents.send('log-message', 'Selected file is not a ZIP archive!');
+      return;
+    }
+
+    if (config.general.week == 'W00') {
+      mainWindow.webContents.send('log-message', 'Please set the week in the settings! Stopping processing...');
+      return;
+    }
+
+    if (app.isPackaged && !config.general.extractionDir == 'extraction-dir') {
+      mainWindow.webContents.send('log-message', 'Please set the extraction directory in the settings! Stopping processing...');
+      return;
+    }
+
+    try {
+      await handleZip(filePath);
+      mainWindow.webContents.send('log-message', `Processed successfully: ${path.basename(filePath)}`);
+    } catch (error) {
+      mainWindow.webContents.send('log-message', `Error: ${error.message}`);
+    }
+  });
 });
 
 async function handleZip(zipPath) {

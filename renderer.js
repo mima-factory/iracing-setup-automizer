@@ -11,17 +11,12 @@ window.api.onLogMessage(msg => {
   logEl.scrollTop = logEl.scrollHeight;
 });
 
-document.getElementById('configForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  try {
-    // Here we saved the config before
-    alert('Settings saved successfully!');
-  } catch (err) {
-    alert('Error saving settings: ' + err.message);
-  }
-});
-
 const ipcRenderer = window.electron.ipcRenderer;
+
+document.getElementById('seasonWeekSelect').addEventListener('change', async () => {
+  const selectedWeek = document.getElementById('seasonWeekSelect').value;
+  await ipcRenderer.invoke('select-week', selectedWeek);
+});
 
 document.getElementById('selectDirectory').addEventListener('click', async () => {
   const selectedPath = await ipcRenderer.invoke('select-directory');
@@ -29,4 +24,29 @@ document.getElementById('selectDirectory').addEventListener('click', async () =>
   if (selectedPath) {
     document.getElementById('selectedDirectory').value = selectedPath;
   }
+});
+
+document.getElementById('selectSetupArchive').addEventListener('click', async () => {
+  const selectedPath = await ipcRenderer.invoke('select-setup-archive');
+  
+  if (selectedPath) {
+    document.getElementById('selectedSetupArchive').value = selectedPath;
+  }
+});
+
+document.getElementById('processSetupArchiveButton').addEventListener('click', async () => {
+  const selectedSetupArchivePath = document.getElementById('selectedSetupArchive').value;
+
+  if (selectedSetupArchivePath.length === 0) {
+    alert('Please select a valid file to process.');
+    return;
+  }
+
+  try {
+    await ipcRenderer.invoke('process-zip-file', selectedSetupArchivePath);
+  } catch (err) {
+    logEl.textContent += `Error processing file: ${err.message}\n`;
+  }
+
+  logEl.scrollTop = logEl.scrollHeight;
 });
