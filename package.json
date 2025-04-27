@@ -1,6 +1,6 @@
 {
   "name": "iracing-setup-automizer",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "App to automize the extraction of setups into the iRacing folder structure.",
   "main": "main.js",
   "scripts": {
@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "adm-zip": "^0.5.16",
-    "chokidar": "^4.0.3",
     "fs-extra": "^11.3.0"
   }
 }
