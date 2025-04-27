@@ -30,7 +30,7 @@ document.getElementById('selectSetupArchive').addEventListener('click', async ()
   const selectedPath = await ipcRenderer.invoke('select-setup-archive');
   
   if (selectedPath) {
-    document.getElementById('selectedSetupArchive').value = selectedPath;
+    document.getElementById('selectedSetupArchive').value = selectedPath.join(';');
   }
 });
 

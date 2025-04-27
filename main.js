@@ -58,7 +58,7 @@ app.whenReady().then(() => {
   ipcMain.handle('select-setup-archive', async () => {
     console.log('Selecting setup archive...');
     const result = dialog.showOpenDialogSync({
-      properties: ['openFile', 'dontAddToRecent'],
+      properties: ['openFile', 'multiSelections', 'dontAddToRecent'],
       buttonLabel: 'Select Setup Archive',
       title: 'Select Setup Archive',
       filters: [
@@ -67,38 +67,41 @@ app.whenReady().then(() => {
       ]
     });
     console.log('Selected file:', result);
-    const selectedPath = result[0];
-    if (selectedPath) {
-      setupArchive = selectedPath;
+    const selectedPaths = result;
+    if (selectedPaths) {
+      setupArchive = selectedPaths;
     }
     mainWindow.webContents.send('log-message', `Selected setup archive: ${setupArchive}`);
-    return result.canceled ? null : selectedPath;
+    return result.canceled ? null : selectedPaths;
   });
 
   // IPC handler for processing a ZIP file
-  ipcMain.handle('process-zip-file', async (_, filePath) => {
-    mainWindow.webContents.send('log-message', `Processing file: ${filePath}`);
+  ipcMain.handle('process-zip-file', async (_, filePaths) => {
+    const files = filePaths.split(';');
+    for (const filePath of files) {
+      mainWindow.webContents.send('log-message', `Processing file: ${filePath}`);
 
-    if (!filePath.endsWith('.zip')) {
-      mainWindow.webContents.send('log-message', 'Selected file is not a ZIP archive!');
-      return;
-    }
+      if (!filePath.endsWith('.zip')) {
+        mainWindow.webContents.send('log-message', 'Selected file is not a ZIP archive!');
+        return;
+      }
 
-    if (config.general.week == 'W00') {
-      mainWindow.webContents.send('log-message', 'Please set the week in the settings! Stopping processing...');
-      return;
-    }
+      if (config.general.week == 'W00') {
+        mainWindow.webContents.send('log-message', 'Please set the week in the settings! Stopping processing...');
+        return;
+      }
 
-    if (app.isPackaged && !config.general.extractionDir == 'extraction-dir') {
-      mainWindow.webContents.send('log-message', 'Please set the extraction directory in the settings! Stopping processing...');
-      return;
-    }
+      if (app.isPackaged && !config.general.extractionDir == 'extraction-dir') {
+        mainWindow.webContents.send('log-message', 'Please set the extraction directory in the settings! Stopping processing...');
+        return;
+      }
 
-    try {
-      await handleZip(filePath);
-      mainWindow.webContents.send('log-message', `Processed successfully: ${path.basename(filePath)}`);
-    } catch (error) {
-      mainWindow.webContents.send('log-message', `Error: ${error.message}`);
+      try {
+        await handleZip(filePath);
+        mainWindow.webContents.send('log-message', `Processed successfully: ${path.basename(filePath)}`);
+      } catch (error) {
+        mainWindow.webContents.send('log-message', `Error: ${error.message}`);
+      }
     }
   });
 });
