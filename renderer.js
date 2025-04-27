@@ -45,8 +45,6 @@ document.getElementById('processSetupArchiveButton').addEventListener('click', a
   try {
     await ipcRenderer.invoke('process-zip-file', selectedSetupArchivePath);
   } catch (err) {
-    logEl.textContent += `Error processing file: ${err.message}\n`;
+    console.error('Error processing zip file:', err);
   }
-
-  logEl.scrollTop = logEl.scrollHeight;
 });
