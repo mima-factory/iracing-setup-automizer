@@ -62,21 +62,28 @@ async function handleZip(zipPath) {
   let matchedNotFound = 0;
   let copiedFiles = 0;
   let skippedFiles = 0;
+  let nonMatchingTracks = [];
+  let nonMatchingSeries = [];
 
   for (zipEntry of entries) {
     let entryName = zipEntry.entryName;
-    // mainWindow.webContents.send('log-message', `Processing entry: ${entryName}`);
     console.log(`Processing entry: ${entryName}`);
     let found = false;
 
     for (let setupJsonMap of config.mappings.setups) {
-      // mainWindow.webContents.send('log-message', `Matching against setup map: ${setupJsonMap.name}`);
-      let matchResult = matchSetupPath(entryName, setupJsonMap);
+      let matchResult = matchSetupPath(entryName, setupJsonMap, config.mappings.tracks, config.mappings.series);
       if (matchResult.result === false) {
-        // mainWindow.webContents.send('log-message', `Could not match entry: ${entryName}`);
         console.log(`Could not match entry: ${entryName}`);
         matchResult.validationErrors.forEach(error => {
-          // mainWindow.webContents.send('log-message', `Validation error: ${error}`);
+          const trackMatch = error.match(/Track not found in map: (?<track>.+)/);
+          if (trackMatch) {
+            nonMatchingTracks.push(trackMatch.groups.track);
+          }
+          const seriesMatch = error.match(/Series not found in map: (?<series>.+)/);
+          if (seriesMatch) {
+            nonMatchingSeries.push(seriesMatch.groups.series);
+          }
+
           console.log(`Validation error: ${error}`);
         });
         continue;
@@ -97,7 +104,6 @@ async function handleZip(zipPath) {
 
       await fse.ensureDir(dest);
       if (await fse.pathExists(path.join(dest, zipEntry.entryName))) {
-        // mainWindow.webContents.send('log-message', `Entry already exists: ${entryName}`);
         console.log(`Entry already exists: ${entryName}`);
         skippedFiles++;
         continue;
@@ -112,11 +118,16 @@ async function handleZip(zipPath) {
     }
   }
 
+  // Make nonMatchingTracks and nonMatchingSeries unique
+  nonMatchingTracks = [...new Set(nonMatchingTracks)];
+  nonMatchingSeries = [...new Set(nonMatchingSeries)];
   mainWindow.webContents.send('log-message', `Processing completed for: ${path.basename(zipPath)}`);
   mainWindow.webContents.send('log-message', `Matched found: ${matchedFound}`);
   mainWindow.webContents.send('log-message', `Matched not found: ${matchedNotFound}`);
   mainWindow.webContents.send('log-message', `Copied files: ${copiedFiles}`);
   mainWindow.webContents.send('log-message', `Skipped files: ${skippedFiles}`);
+  mainWindow.webContents.send('log-message', `Non-matching tracks: ${nonMatchingTracks.join(', ')}`);
+  mainWindow.webContents.send('log-message', `Non-matching series: ${nonMatchingSeries.join(', ')}`);
   mainWindow.webContents.send('log-message', '------------------------------------');
 }
 

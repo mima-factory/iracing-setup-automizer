@@ -1,6 +1,4 @@
-const { config } = require('./config');
-
-function matchSetupPath(setupPath, map) {
+function matchSetupPath(setupPath, map, trackMapJson, seriesMapJson) {
   let success = true;
   const validationErrors = [];
   const regex = new RegExp(map.pattern);
@@ -21,12 +19,10 @@ function matchSetupPath(setupPath, map) {
   const parsedSeasonYear = match.groups.seasonYear;
   const parsedSeasonNo = match.groups.seasonNo;
 
-  const trackMap = generateMap(config.mappings.tracks);
-  const seriesMap = generateMap(config.mappings.series);
   const normalizedTrack = normalizeValue(parsedTrack);
   const normalizedSeries = normalizeValue(parsedSeries, false);
-  console.log('mapping parsed track to map', normalizedTrack, trackMap);
-  console.log('mapping parsed series to map', normalizedSeries, seriesMap);
+  const trackMap = generateMap(trackMapJson);
+  const seriesMap = generateMap(seriesMapJson);
   const track = findMatchForNormalizedValue(normalizedTrack, trackMap);
   const series = findMatchForNormalizedValue(normalizedSeries, seriesMap);
   if (track === false) {
@@ -95,5 +91,4 @@ function findMatchForNormalizedValue(normalizedValue, map) {
 
 module.exports = {
   matchSetupPath,
-  normalizeValue,
 };

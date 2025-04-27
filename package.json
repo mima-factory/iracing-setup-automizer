@@ -4,7 +4,7 @@
   "description": "App to automize the extraction of setups into the iRacing folder structure.",
   "main": "main.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --watchAll",
     "start": "electron .",
     "dist": "electron-builder"
   },
