@@ -1,18 +1,32 @@
 fse = require('fs-extra');
+const path = require('path');
 
 function loadDataPacksForSeries(series, setupsFolder) {
   const carFolders = fse.readdirSync(setupsFolder);
-  const dataPacks = [];
+  const datapacks = {};
   for (const carFolder of carFolders) {
-    const carDatapacksFolder = path.join(setupsFolder, carFolder, 'Garage 61', 'Data Packs');
+    let carDatapacksFolder = path.join(setupsFolder, carFolder, 'Garage 61', 'Data Packs');
+    console.log(carDatapacksFolder);
     if (!fse.existsSync(carDatapacksFolder)) continue;
-    const car = parseCarName(carFolder);
+    let car = parseCarName(carFolder);
+    datapacks[car] = {
+      car: car,
+      dataPacks: [],
+    };
 
-    const dataPackFolders = fse.readdirSync(carDatapacksFolder);
+    let dataPackFolders = fse.readdirSync(carDatapacksFolder);
     for (const dataPackFolder of dataPackFolders) {
-      const { seasonYear, seasonNo, week, track, series} = parseDatapackName(dataPackFolder);
+      let parsedDatapack = parseDatapackName(dataPackFolder);
+      if (!parsedDatapack) continue;
+      datapacks[car].dataPacks.push(parsedDatapack);
     }
+
+    datapacks[car].dataPacks = datapacks[car].dataPacks.filter((dataPack) => {
+      return series.includes(dataPack.series);
+    });
   }
+
+  return datapacks;
 }
 
 function parseCarName(carFolder) {
