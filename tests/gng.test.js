@@ -64,7 +64,7 @@ test('parseDatapackName parses track with two words', () => {
   const result = parseDatapackName(datapackName);
 
   expect(result).not.toBeNull();
-  expect(result.track).toBe('Watkins Glen');
+  expect(result.track).toBe('Watkins-Glen');
 });
 
 test('parseDatapackName parses series with minus sign', () => {
@@ -73,7 +73,7 @@ test('parseDatapackName parses series with minus sign', () => {
   const result = parseDatapackName(datapackName);
 
   expect(result).not.toBeNull();
-  expect(result.series).toBe('GT-Sprint');
+  expect(result.series).toBe('GT3');
 });
 
 test('parseDatapackName parses WET/Wet track', () => {

@@ -18,6 +18,8 @@ function matchSetupPath(setupPath, map, trackMapJson, seriesMapJson) {
   const parsedSeries = match.groups.series;
   const parsedSeasonYear = match.groups.seasonYear;
   const parsedSeasonNo = match.groups.seasonNo;
+  const isWet = match.groups.isWet ? true : false;
+  const week = match.groups.week ? match.groups.week : false;
 
   const normalizedTrack = normalizeValue(parsedTrack);
   const normalizedSeries = normalizeValue(parsedSeries, false);
@@ -45,6 +47,8 @@ function matchSetupPath(setupPath, map, trackMapJson, seriesMapJson) {
       series,
       "seasonYear": parsedSeasonYear,
       "seasonNo": parsedSeasonNo,
+      isWet,
+      week,
     },
   };
 }

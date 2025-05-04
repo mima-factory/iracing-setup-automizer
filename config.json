@@ -80,6 +80,7 @@
       "motegi": "Motegi",
       "mugello": "Mugello",
       "nec": "NEC",
+      "nordschleife": "NEC-VLN",
       "nos 24": "NOS-24",
       "nuerburgring 24": "NOS-24",
       "nuerburgring gp": "Nurburgring-GP",
@@ -131,9 +132,12 @@
       "bmw gt4 evo": "SPORTSCAR",
       "gt3": "GT3",
       "gts": "GT3",
+      "gt sprint": "GT3",
       "gte": "GTE",
       "pcc": "PCC",
-      "mx5": "MX5"
+      "mx5": "MX5",
+      "nec": "NEC",
+      "creventic": "Creventic"
     }
   }
 }

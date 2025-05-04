@@ -1,5 +1,7 @@
 fse = require('fs-extra');
+const { matchSetupPath } = require('./matcher');
 const path = require('path');
+const config = require('../config.json');
 
 function loadDataPacksForSeries(series, setupsFolder) {
   const carFolders = fse.readdirSync(setupsFolder);
@@ -34,16 +36,21 @@ function parseCarName(carFolder) {
 }
 
 function parseDatapackName(dataPackFolder) {
-  const regex = /(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]{1,2})\sW(?<week>[0-9]{2})\s(?<series>[\w-]+)\s[\w-]+\s(?<track>.*?)(?: (?<isWet>(WET|Wet)))?$/;
-  const match = dataPackFolder.match(regex);
-  if (match) {
+  const map = 
+  {
+    "provider": "GnG",
+    "pattern": "(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]{1,2})\\sW(?<week>[0-9]{2})\\s(?<series>[\\w-]+)\\s[\\w-]+\\s(?<track>.*?)(?: (?<isWet>(WET|Wet)))?$",
+    "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-{series}/{week}-{track}"
+  };
+  const matcherResult = matchSetupPath(dataPackFolder, map, config.mappings.tracks, config.mappings.series);
+  if (matcherResult.result) {
     return {
-      seasonYear: match.groups.seasonYear,
-      seasonNo: match.groups.seasonNo,
-      week: match.groups.week,
-      track: match.groups.track,
-      series: match.groups.series,
-      isWet: match.groups.isWet ? true : false,
+      seasonYear: matcherResult.matches.seasonYear,
+      seasonNo: matcherResult.matches.seasonNo,
+      week: matcherResult.matches.week,
+      track: matcherResult.matches.track,
+      series: matcherResult.matches.series,
+      isWet: matcherResult.matches.isWet,
     };
   }
   return null;
