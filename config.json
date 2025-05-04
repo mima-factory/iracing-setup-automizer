@@ -39,6 +39,16 @@
         "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-{series}/{week}-{track}"
       }
     ],
+    "gng": {
+      "series": {
+        "imsa": ["IMSA", "IMSA GTP", "IMSA GTD", "IMSA LMP2"],
+        "gt3": ["GT3", "GTS"],
+        "sportscar": ["SPORTSCAR", "GT4", "LMP3"],
+        "pcup": ["PCUP"],
+        "nec": ["NEC"],
+        "creventic": ["Creventic"]
+      }
+    },
     "tracks": {
       "aragon": "Aragon",
       "barcelona historic": "Barcelona-Historic",

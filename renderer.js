@@ -11,6 +11,12 @@ window.api.onLogMessage(msg => {
   logEl.scrollTop = logEl.scrollHeight;
 });
 
+window.api.onLogDatapackPreview(msg => {
+  const logElement = document.getElementById('datapackPreview');
+  logElement.textContent += msg + '\n';
+  logElement.scrollTop = logElement.scrollHeight;
+});
+
 const ipcRenderer = window.electron.ipcRenderer;
 
 document.getElementById('seasonWeekSelect').addEventListener('change', async () => {
@@ -47,4 +53,15 @@ document.getElementById('processSetupArchiveButton').addEventListener('click', a
   } catch (err) {
     console.log('Error processing zip file:', err);
   }
+});
+
+document.getElementById('loadGngDatapacks').addEventListener('click', async () => {
+  const selectedElement = document.getElementById('gngSeriesSelect');
+  const selectedSeries = Array.from(selectedElement.options).filter(function (option) {
+    return option.selected;
+  }).map(function (option) {
+    return option.value;
+  });
+
+  await ipcRenderer.invoke('load-gng-datapacks', selectedSeries);
 });

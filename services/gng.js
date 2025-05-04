@@ -30,7 +30,7 @@ function loadDataPacksForSeries(series, setupsFolder) {
 }
 
 function parseCarName(carFolder) {
-  return "bmwm4gt3";
+  return carFolder;
 }
 
 function parseDatapackName(dataPackFolder) {

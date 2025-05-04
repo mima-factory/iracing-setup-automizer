@@ -5,6 +5,8 @@ contextBridge.exposeInMainWorld('api', {
   onLogMessage: cb => ipcRenderer.on('log-message', (_, msg) => cb(msg)),
   loadConfig: () => ipcRenderer.invoke('load-config'),
   selectWeek: () => ipcRenderer.invoke('select-week'),
+  loadGngDatapacks: () => ipcRenderer.invoke('load-gng-datapacks'),
+  onLogDatapackPreview: cb => ipcRenderer.on('log-datapack-preview', (_, msg) => cb(msg)),
 });
 
 contextBridge.exposeInMainWorld('electron', {

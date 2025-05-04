@@ -4,6 +4,7 @@ const AdmZip = require('adm-zip');
 const fse = require('fs-extra');
 const { config, loadConfig } = require('./services/config');
 const { matchSetupPath } = require('./services/matcher');
+const { loadDataPacksForSeries } = require('./services/gng');
 
 let mainWindow;
 let extractDirectory = path.join(__dirname, 'extraction-dir');
@@ -101,6 +102,29 @@ app.whenReady().then(() => {
         mainWindow.webContents.send('log-message', `Processed successfully: ${path.basename(filePath)}`);
       } catch (error) {
         mainWindow.webContents.send('log-message', `Error: ${error.message}`);
+      }
+    }
+  });
+
+  // IPC handlers for loading and saving config
+  ipcMain.handle('load-gng-datapacks', async (_, selectedSeries) => {
+    let seriesFilter = [];
+    for (const series of selectedSeries) {
+      for (const [key, value] of Object.entries(config.mappings.gng.series)) {
+        if (key == series) {
+          seriesFilter = seriesFilter.concat(value);
+        }
+      }
+    }
+
+    const foundDatapacks = loadDataPacksForSeries(seriesFilter, config.general.extractionDir);
+
+    mainWindow.webContents.send('log-message', `Selected GnG series: ${selectedSeries}`);
+    for (const car in foundDatapacks) {
+      if (foundDatapacks[car].dataPacks.length == 0) continue;
+      mainWindow.webContents.send('log-datapack-preview', `Car: ${car}`);
+      for (const dataPack of foundDatapacks[car].dataPacks) {
+        mainWindow.webContents.send('log-datapack-preview', `  - ${dataPack.seasonYear}S${dataPack.seasonNo} W${dataPack.week} ${dataPack.series} ${dataPack.track}`);
       }
     }
   });
