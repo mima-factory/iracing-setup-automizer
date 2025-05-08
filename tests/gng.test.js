@@ -16,7 +16,7 @@ jest.mock('fs-extra', () => ({
   existsSync: jest.fn(() => true),
 }));
 
-const { loadDataPacksForSeries, parseCarName, parseDatapackName } = require('../services/gng');
+const { loadDataPacksForSeries, loadTargetForDatapack, parseDatapackName } = require('../services/gng');
 
 test('parseDatapackName parses simple case, all one word', () => {
   const datapackName = '25S2 W05 IMSA Acura Imola';
@@ -116,4 +116,20 @@ test('loadDataPacksForSeries filters by multiple series', () => {
   const result = loadDataPacksForSeries(['IMSA', 'GT3'], setupsFolder);
 
   expect(result[expectedCar].dataPacks.length).toBe(3);
+});
+
+test('loadTargetForDatapack generates target folder', () => {
+  const car = 'bmwm4gt3';
+  const dataPack = {
+    seasonYear: '25',
+    seasonNo: '2',
+    week: '05',
+    series: 'IMSA',
+    track: 'Imola',
+    isWet: false,
+  };
+
+  const result = loadTargetForDatapack(car, dataPack);
+
+  expect(result).toBe(path.join('bmwm4gt3', 'Garage 61 - Motorsports Factory', 'S2502-IMSA', 'W05-Imola'));
 });

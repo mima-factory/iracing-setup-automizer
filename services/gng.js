@@ -19,7 +19,8 @@ function loadDataPacksForSeries(series, setupsFolder) {
     let dataPackFolders = fse.readdirSync(carDatapacksFolder);
     for (const dataPackFolder of dataPackFolders) {
       let parsedDatapack = parseDatapackName(dataPackFolder);
-      if (!parsedDatapack) continue;
+      if (parsedDatapack == null) continue;
+      parsedDatapack['sourceFolder'] = path.join(carDatapacksFolder, dataPackFolder);
       datapacks[car].dataPacks.push(parsedDatapack);
     }
 
@@ -44,6 +45,9 @@ function parseDatapackName(dataPackFolder) {
   };
   const matcherResult = matchSetupPath(dataPackFolder, map, config.mappings.tracks, config.mappings.series);
   if (matcherResult.result) {
+    if (matcherResult.matches.seasonYear === null || matcherResult.matches.seasonNo === null || matcherResult.matches.week === null || matcherResult.matches.track === null || matcherResult.matches.series === null || matcherResult.matches.isWet === null) {
+      return null;
+    }
     return {
       seasonYear: matcherResult.matches.seasonYear,
       seasonNo: matcherResult.matches.seasonNo,
@@ -56,8 +60,14 @@ function parseDatapackName(dataPackFolder) {
   return null;
 }
 
+function loadTargetForDatapack(car, dataPack) {
+  const targetFolder = path.join(car, 'Garage 61 - Motorsports Factory', `S${dataPack.seasonYear}0${dataPack.seasonNo}-${dataPack.series}`, `W${dataPack.week}-${dataPack.track}`);
+  return targetFolder;
+}
+
 module.exports = {
   loadDataPacksForSeries,
   parseCarName,
-  parseDatapackName
+  parseDatapackName,
+  loadTargetForDatapack,
 };

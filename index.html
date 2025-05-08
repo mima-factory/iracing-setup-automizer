@@ -121,26 +121,47 @@
     <div class="card mb-5 shadow-sm">
       <div class="card-body">
         <h2 class="h5 text-secondary mb-3">Grid and Go</h2>
-        <label for="gngSeriesSelect" class="form-label fw-bold">Series</label>
-        <select id="gngSeriesSelect" class="form-select" multiple>
-          <option value="0" disabled selected>Choose series to copy...</option>
-          <option value="imsa">IMSA</option>
-          <option value="gt3">GT3</option>
-          <option value="sportscar">GT4</option>
-        </select>
+        <div class="row">
+
+          <div class="col-md-7">
+            <div class="row">
+              <label class="form-label fw-bold">iRacing setups directory</label>
+              <div class="input-group">
+                <button id="selectSetupsDirectory" class="btn btn-outline-secondary">Browse...</button>
+                <input id="selectedSetupsDirectory" type="text" class="form-control" readonly placeholder="No directory selected" />
+              </div>
+            </div>
+
+            <div class="row pt-2">
+              <label class="form-label fw-bold">Copy-target directory</label>
+              <div class="input-group mb-2">
+                <button id="selectTargetDirectory" class="btn btn-outline-secondary">Browse...</button>
+                <input id="selectedTargetDirectory" type="text" class="form-control" readonly placeholder="No directory selected" />
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-5">
+            <label for="gngSeriesSelect" class="form-label fw-bold">Series</label>
+            <select id="gngSeriesSelect" class="form-select" multiple>
+              <option value="0" disabled selected>Choose series to copy...</option>
+              <option value="imsa">IMSA</option>
+              <option value="gt3">GT3</option>
+              <option value="sportscar">GT4</option>
+              <option value="nec">NEC</option>
+              <option value="creventic">Creventic</option>
+            </select>
+          </div>
+        </div>
         <button id="loadGngDatapacks" class="btn btn-primary w-100">Load GnG data packs</button>
         <label for="gngDatapacksSelect" class="form-label fw-bold">Data pack</label>
-        <select id="gngDatapacksSelect" class="form-select" multiple>
+        <select id="gngDatapacksSelect" class="form-select" multiple size="10">
           <option value="0" disabled selected>Choose data packs to copy...</option>
-          <option value="bmwm4gt3">bmwm4gt3</option>
-          <option value="bmwm4gt4">bmwm4gt4</option>
-          <option value="dallarap217">dallarap217</option>
         </select>
         <pre id="datapackPreview" class="p-3 border rounded" style="height: 300px; overflow-y: auto;">No data packs selected yet...</pre>
         <button id="copyGngDatapacks" class="btn btn-primary w-100">Copy selected data packs</button>
         <pre id="datapackLog" class="p-3 border rounded" style="height: 300px; overflow-y: auto;">No data packs copied yet...</pre>
       </div>
-    </div>
   </div>
 
   <script src="renderer.js"></script>

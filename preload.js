@@ -7,6 +7,9 @@ contextBridge.exposeInMainWorld('api', {
   selectWeek: () => ipcRenderer.invoke('select-week'),
   loadGngDatapacks: () => ipcRenderer.invoke('load-gng-datapacks'),
   onLogDatapackPreview: cb => ipcRenderer.on('log-datapack-preview', (_, msg) => cb(msg)),
+  onShowGngDatapacks: cb => ipcRenderer.on('show-gng-datapack', (_, datapacks) => cb(datapacks)),
+  onCopyGngDatapacks: cb => ipcRenderer.on('copy-gng-datapacks', (_, datapackIds) => cb(datapackIds)),
+  onLogDatapackCopy: cb => ipcRenderer.on('log-datapack-copy', (_, msg) => cb(msg)),
 });
 
 contextBridge.exposeInMainWorld('electron', {

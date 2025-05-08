@@ -4,10 +4,13 @@ const AdmZip = require('adm-zip');
 const fse = require('fs-extra');
 const { config, loadConfig } = require('./services/config');
 const { matchSetupPath } = require('./services/matcher');
-const { loadDataPacksForSeries } = require('./services/gng');
+const { loadDataPacksForSeries, loadTargetForDatapack } = require('./services/gng');
 
 let mainWindow;
 let extractDirectory = path.join(__dirname, 'extraction-dir');
+let validDatapacksWithTargets = [];
+let setupsDirectory = '';
+let targetDirectory = '';
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
@@ -59,7 +62,7 @@ app.whenReady().then(() => {
   ipcMain.handle('select-setup-archive', async () => {
     console.log('Selecting setup archive...');
     const result = dialog.showOpenDialogSync({
-      properties: ['openFile', 'multiSelections', 'dontAddToRecent'],
+      properties: ['openFile', 'multiSelections', 'dontAddToRecent', 'openDirectory'],
       buttonLabel: 'Select Setup Archive',
       title: 'Select Setup Archive',
       filters: [
@@ -106,7 +109,6 @@ app.whenReady().then(() => {
     }
   });
 
-  // IPC handlers for loading and saving config
   ipcMain.handle('load-gng-datapacks', async (_, selectedSeries) => {
     let seriesFilter = [];
     for (const series of selectedSeries) {
@@ -117,18 +119,78 @@ app.whenReady().then(() => {
       }
     }
 
-    const foundDatapacks = loadDataPacksForSeries(seriesFilter, config.general.extractionDir);
+    const foundDatapacks = loadDataPacksForSeries(seriesFilter, setupsDirectory);
+    validDatapacksWithTargets = [];
 
     mainWindow.webContents.send('log-message', `Selected GnG series: ${selectedSeries}`);
     for (const car in foundDatapacks) {
       if (foundDatapacks[car].dataPacks.length == 0) continue;
       mainWindow.webContents.send('log-datapack-preview', `Car: ${car}`);
       for (const dataPack of foundDatapacks[car].dataPacks) {
-        mainWindow.webContents.send('log-datapack-preview', `  - ${dataPack.seasonYear}S${dataPack.seasonNo} W${dataPack.week} ${dataPack.series} ${dataPack.track}`);
+        let targetForDatapack = loadTargetForDatapack(car, dataPack)
+        validDatapacksWithTargets.push({
+          car: car,
+          dataPack,
+          target: targetForDatapack,
+        });
+        mainWindow.webContents.send('show-gng-datapack', validDatapacksWithTargets);
       }
     }
   });
+
+  ipcMain.handle('copy-gng-datapacks', async (_, selectedDatapackIds) => {
+    selectedDatapackIdsInt = selectedDatapackIds.map(Number);
+    mainWindow.webContents.send('log-datapack-copy', `Selected GnG datapacks: ${selectedDatapackIds}`);
+    const selectedDatapacks = validDatapacksWithTargets.filter((datapack, index) => {
+      return selectedDatapackIdsInt.includes(index)});
+    const extractionDir = targetDirectory;
+    console.log({selectedDatapacks})
+    for (const datapackWithTarget of selectedDatapacks) {
+      mainWindow.webContents.send('log-datapack-copy', `Car: ${datapackWithTarget.car}`);
+      console.log({datapackWithTarget});
+      console.log(datapackWithTarget.dataPack);
+      fse.readdirSync(datapackWithTarget.dataPack.sourceFolder).forEach(file => {
+        const sourceFilePath = path.join(datapackWithTarget.dataPack.sourceFolder, file);
+        const targetFilePath = path.join(extractionDir, datapackWithTarget.target, file);
+        fse.copySync(sourceFilePath, targetFilePath, { overwrite: true });
+        mainWindow.webContents.send('log-datapack-copy', `Copied: ${file} to ${targetFilePath}`);
+      });
+    }
+  });
+
+  // IPC handler for selecting the setups directory
+  ipcMain.handle('select-setups-directory', async () => {
+    console.log('Selecting setups directory...');
+    const result = dialog.showOpenDialogSync({
+      properties: ['openDirectory']
+    });
+    console.log('Selected setups directory:', result);
+    const selectedPath = result[0];
+    if (selectedPath) {
+      setupsDirectory = selectedPath;
+    }
+    console.log('Updated setups Directory:', setupsDirectory);
+    mainWindow.webContents.send('log-message', `Updated setups directory: ${setupsDirectory}`);
+    return result.canceled ? null : selectedPath;
+  });
+
+  // IPC handler for selecting the target directory
+  ipcMain.handle('select-target-directory', async () => {
+    console.log('Selecting target directory...');
+    const result = dialog.showOpenDialogSync({
+      properties: ['openDirectory']
+    });
+    console.log('Selected target directory:', result);
+    const selectedPath = result[0];
+    if (selectedPath) {
+      targetDirectory = selectedPath;
+    }
+    console.log('Updated target Directory:', targetDirectory);
+    mainWindow.webContents.send('log-message', `Updated target directory: ${targetDirectory}`);
+    return result.canceled ? null : selectedPath;
+  });
 });
+
 
 async function handleZip(zipPath) {
   const zip = new AdmZip(zipPath);

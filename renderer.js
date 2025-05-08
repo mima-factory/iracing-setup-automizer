@@ -17,6 +17,46 @@ window.api.onLogDatapackPreview(msg => {
   logElement.scrollTop = logElement.scrollHeight;
 });
 
+window.api.onLogDatapackCopy(msg => {
+  const logElement = document.getElementById('datapackLog');
+  logElement.textContent += msg + '\n';
+  logElement.scrollTop = logElement.scrollHeight;
+});
+
+window.api.onShowGngDatapacks(datapacksWithTargets => {
+  const selectElement = document.getElementById('gngDatapacksSelect');
+  // Clear existing options
+  selectElement.innerHTML = '';
+  const defaultOption = document.createElement('option');
+  defaultOption.text = 'Select data packs to copy...';
+  defaultOption.value = 'default';
+  selectElement.add(defaultOption);
+  let lastCar = null;
+  let carOption = null;
+  
+  // Start a regular loop over the datapacks
+  for (let index = 0; index < datapacksWithTargets.length; index++) {
+    const datapackWithTarget = datapacksWithTargets[index];
+    console.log({index, datapackWithTarget: datapackWithTarget});
+    if (lastCar !== datapackWithTarget.car) {
+      if (lastCar !== null) {
+        selectElement.add(carOption);  
+      }
+      const car = datapackWithTarget.car;
+      carOption = document.createElement('optgroup');
+      carOption.label = car;
+    }
+    lastCar = datapackWithTarget.car;
+    const datapack = datapackWithTarget.dataPack;
+
+    const option = document.createElement('option');
+    option.text = `${datapack.seasonYear}S${datapack.seasonNo} W${datapack.week} ${datapack.track} ${datapack.series}`;
+    option.value = index;
+    carOption.appendChild(option);
+  }
+
+});
+
 const ipcRenderer = window.electron.ipcRenderer;
 
 document.getElementById('seasonWeekSelect').addEventListener('change', async () => {
@@ -64,4 +104,31 @@ document.getElementById('loadGngDatapacks').addEventListener('click', async () =
   });
 
   await ipcRenderer.invoke('load-gng-datapacks', selectedSeries);
+});
+
+document.getElementById('copyGngDatapacks').addEventListener('click', async () => {
+  const selectElement = document.getElementById('gngDatapacksSelect');
+  const selectedDatapackIds = Array.from(selectElement.options).filter(function (option) {
+    return option.selected;
+  }).map(function (option) {
+    return option.value;
+  });
+
+  await ipcRenderer.invoke('copy-gng-datapacks', selectedDatapackIds);
+});
+
+document.getElementById('selectSetupsDirectory').addEventListener('click', async () => {
+  const selectedPath = await ipcRenderer.invoke('select-setups-directory');
+  
+  if (selectedPath) {
+    document.getElementById('selectedSetupsDirectory').value = selectedPath;
+  }
+});
+
+document.getElementById('selectTargetDirectory').addEventListener('click', async () => {
+  const selectedPath = await ipcRenderer.invoke('select-target-directory');
+  
+  if (selectedPath) {
+    document.getElementById('selectedTargetDirectory').value = selectedPath;
+  }
 });

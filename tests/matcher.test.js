@@ -77,3 +77,28 @@ test('matchSetupPath add error on non matching series', () => {
   expect(result.matches.series).toBe(false);
   expect(result.validationErrors.length).toBe(1);
 });
+
+test('matchSetupPath for GnG', () => {
+  const setupPath = 'bmwm4evogt4/Garage 61/Data packs/25S1 W02 SportsCar BMW Oschersleben/2025S1-W02-GnG-BMW-Oschersleben-Q.sto';
+  const map = {
+    pattern: /^(?<car>[A-Za-z0-9_-]+)\/Garage 61\/Data packs\/(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]{1,2})\sW(?<week>[0-9]{2})\s(?<series>[\w-]+)\s[\w-]+\s(?<track>.*?)(?: (?<isWet>(WET|Wet)))?\/[A-Z0-9a-z-_]+\.sto$/,
+  };
+  const config = {
+    mappings: {
+      tracks: {
+        'oschersleben': 'Oschersleben',
+      },
+      series: {
+        'sportscar': 'SPORTSCAR',
+      },
+    },
+  };
+  const result = matchSetupPath(setupPath, map, config.mappings.tracks, config.mappings.series);
+
+  expect(result.result).toBe(true);
+  expect(result.matches.car).toBe('bmwm4evogt4');
+  expect(result.matches.seasonYear).toBe('25');
+  expect(result.matches.seasonNo).toBe('1');
+  expect(result.matches.track).toBe('Oschersleben');
+  expect(result.matches.series).toBe('SPORTSCAR');
+});
