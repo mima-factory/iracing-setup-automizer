@@ -127,9 +127,10 @@ test('loadTargetForDatapack generates target folder', () => {
     series: 'IMSA',
     track: 'Imola',
     isWet: false,
+    destFolderTemplate: '{base}\\{car}',
   };
 
-  const result = loadTargetForDatapack(car, dataPack);
+  const result = loadTargetForDatapack(car, 'base\\path', dataPack);
 
-  expect(result).toBe(path.join('bmwm4gt3', 'Garage 61 - Motorsports Factory', 'S2502-IMSA', 'W05-Imola'));
+  expect(result).toBe(path.join('base', 'path', 'bmwm4gt3'));
 });
