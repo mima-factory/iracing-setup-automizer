@@ -44,15 +44,16 @@
     <!-- Intro -->
     <div class="mb-5 text-center">
       <p class="lead">
-        Copy parsed setups from ZIP archives into your iRacing setups directory.<br />
-        <strong>Warning:</strong> If you’re unsure, point to an empty folder to see how it works first.
+        Extract setups from ZIP archives directly into your iRacing setups directory. (or any other directory)<br />
+        <strong>Warning:</strong> If you’re unsure how it works, point to an empty folder to see how it works first.
       </p>
     </div>
 
     <!-- Settings Card -->
     <div class="card mb-5 shadow-sm">
       <div class="card-body">
-        <h2 class="h5 text-secondary mb-4">Settings</h2>
+        <h2 class="h5 text-secondary mb-4">HYMO / P1Doks</h2>
+        <p class="text-muted small mb-2">This can handle single HYMO setup .zip files with one car and track, and also P1Doks .zip files for a specific week with multiple cars in it.</p>
         <div class="row g-3">
           <!-- Season Week -->
           <div class="col-md-3">
@@ -78,7 +79,7 @@
 
           <!-- Extraction Directory -->
           <div class="col-md-4">
-            <label class="form-label fw-bold">Extraction Directory</label>
+            <label class="form-label fw-bold">iRacing setups directory</label>
             <div class="input-group">
               <button id="selectDirectory" class="btn btn-outline-secondary">Browse...</button>
               <input id="selectedDirectory" type="text" class="form-control" readonly placeholder="No directory selected" />
@@ -87,7 +88,7 @@
 
           <!-- Setup Archive & Process -->
           <div class="col-md-5">
-            <label class="form-label fw-bold">Setup Archive</label>
+            <label class="form-label fw-bold">Setup .zip file</label>
             <div class="input-group mb-2">
               <button id="selectSetupArchive" class="btn btn-outline-secondary">Browse...</button>
               <input id="selectedSetupArchive" type="text" class="form-control" readonly placeholder="No archive selected" />
@@ -95,25 +96,11 @@
             <button id="processSetupArchiveButton" class="btn btn-primary w-100">Process Archive</button>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Logs Card -->
-    <div class="card mb-5 shadow-sm">
-      <div class="card-body">
-        <h2 class="h5 text-secondary mb-3">Logs</h2>
-        <pre id="logOutput" class="p-3 border rounded" style="height: 300px; overflow-y: auto;">No logs yet...</pre>
-      </div>
-    </div>
-
-    <!-- Mappings Card -->
-    <div class="card mb-5 shadow-sm">
-      <div class="card-body">
-        <h2 class="h5 text-secondary mb-3">Mappings (JSON)</h2>
-        <p class="text-muted small mb-2">
-          Used to map ZIP paths to your Garage 61 folder structure.
-        </p>
-        <textarea id="mappingsTextarea" rows="8" class="form-control" readonly placeholder="Mappings will appear here"></textarea>
+        
+        <div class="row g-3">
+          <h2 class="h5 text-secondary mb-3">Logs</h2>
+          <pre id="logOutput" class="p-3 border rounded" style="height: 300px; overflow-y: auto;">No logs yet...</pre>
+        </div>
       </div>
     </div>
 
@@ -121,6 +108,8 @@
     <div class="card mb-5 shadow-sm">
       <div class="card-body">
         <h2 class="h5 text-secondary mb-3">Grid and Go</h2>
+        
+        <p class="text-muted small mb-2">This can copy GnG setups from the "Data packs" directories into the Team directories.</p>
         <div class="row">
 
           <div class="col-md-7">
@@ -152,16 +141,33 @@
               <option value="creventic">Creventic</option>
             </select>
           </div>
+          <button id="loadGngDatapacks" class="btn btn-primary w-100">Load GnG data packs</button>
         </div>
-        <button id="loadGngDatapacks" class="btn btn-primary w-100">Load GnG data packs</button>
-        <label for="gngDatapacksSelect" class="form-label fw-bold">Data pack</label>
-        <select id="gngDatapacksSelect" class="form-select" multiple size="10">
-          <option value="0" disabled selected>Choose data packs to copy...</option>
-        </select>
-        <pre id="datapackPreview" class="p-3 border rounded" style="height: 300px; overflow-y: auto;">No data packs selected yet...</pre>
-        <button id="copyGngDatapacks" class="btn btn-primary w-100">Copy selected data packs</button>
-        <pre id="datapackLog" class="p-3 border rounded" style="height: 300px; overflow-y: auto;">No data packs copied yet...</pre>
+
+        <div class="row">
+          <label for="gngDatapacksSelect" class="form-label fw-bold">Data pack</label>
+          <select id="gngDatapacksSelect" class="form-select" multiple size="10">
+            <option value="0" disabled selected>Choose data packs to copy...</option>
+          </select>
+          <pre id="datapackPreview" class="m-2 p-3 border rounded" style="height: 300px; overflow-y: auto;">No data packs selected yet...</pre>
+        </div>
+
+        <div class="row">
+          <button id="copyGngDatapacks" class="btn btn-primary w-100">Copy selected data packs</button>
+          <pre id="datapackLog" class="m-2 p-3 border rounded" style="height: 300px; overflow-y: auto;">No data packs copied yet...</pre>
+        </div>
       </div>
+  </div>
+
+  <!-- Mappings Card -->
+  <div class="card mb-5 shadow-sm">
+    <div class="card-body">
+      <h2 class="h5 text-secondary mb-3">Mappings (JSON)</h2>
+      <p class="text-muted small mb-2">
+        This is the JSON mapping of the setups. You can not edit it yet, it is only meant for debugging.<br />
+      </p>
+      <textarea id="mappingsTextarea" rows="8" class="form-control" readonly placeholder="Mappings will appear here"></textarea>
+    </div>
   </div>
 
   <script src="renderer.js"></script>
