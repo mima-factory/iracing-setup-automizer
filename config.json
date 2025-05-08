@@ -1,9 +1,6 @@
 {
   "general": {
-    "season": "S2502",
-    "series": "IMSA",
     "week": "W00",
-    "track": "Watkins Glen",
     "extractionDir": "extraction-dir"
   },
   "mappings": {
