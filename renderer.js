@@ -50,7 +50,7 @@ window.api.onShowGngDatapacks(datapacksWithTargets => {
     const datapack = datapackWithTarget.dataPack;
 
     const option = document.createElement('option');
-    option.text = `${datapack.seasonYear}S${datapack.seasonNo} W${datapack.week} ${datapack.track} ${datapack.series}`;
+    option.text = `${datapack.seasonYear}S${datapack.seasonNo} W${datapack.week} ${datapack.track} ${datapack.series}${datapack.isWet ? ' WET' : ''}`;
     option.value = index;
     carOption.appendChild(option);
   }

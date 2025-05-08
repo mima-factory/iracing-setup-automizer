@@ -119,7 +119,7 @@ app.whenReady().then(() => {
       }
     }
 
-    const foundDatapacks = loadDataPacksForSeries(seriesFilter, setupsDirectory);
+    const foundDatapacks = loadDataPacksForSeries(seriesFilter, setupsDirectory, targetDirectory);
     validDatapacksWithTargets = [];
 
     mainWindow.webContents.send('log-message', `Selected GnG series: ${selectedSeries}`);
@@ -127,7 +127,7 @@ app.whenReady().then(() => {
       if (foundDatapacks[car].dataPacks.length == 0) continue;
       mainWindow.webContents.send('log-datapack-preview', `Car: ${car}`);
       for (const dataPack of foundDatapacks[car].dataPacks) {
-        let targetForDatapack = loadTargetForDatapack(car, dataPack)
+        let targetForDatapack = loadTargetForDatapack(car, targetDirectory, dataPack)
         validDatapacksWithTargets.push({
           car: car,
           dataPack,
@@ -143,20 +143,19 @@ app.whenReady().then(() => {
     mainWindow.webContents.send('log-datapack-copy', `Selected GnG datapacks: ${selectedDatapackIds}`);
     const selectedDatapacks = validDatapacksWithTargets.filter((datapack, index) => {
       return selectedDatapackIdsInt.includes(index)});
-    const extractionDir = targetDirectory;
-    console.log({selectedDatapacks})
-    for (const datapackWithTarget of selectedDatapacks) {
-      mainWindow.webContents.send('log-datapack-copy', `Car: ${datapackWithTarget.car}`);
-      console.log({datapackWithTarget});
-      console.log(datapackWithTarget.dataPack);
-      fse.readdirSync(datapackWithTarget.dataPack.sourceFolder).forEach(file => {
-        const sourceFilePath = path.join(datapackWithTarget.dataPack.sourceFolder, file);
-        const targetFilePath = path.join(extractionDir, datapackWithTarget.target, file);
-        fse.copySync(sourceFilePath, targetFilePath, { overwrite: true });
-        mainWindow.webContents.send('log-datapack-copy', `Copied: ${file} to ${targetFilePath}`);
-      });
-    }
-  });
+      console.log({selectedDatapacks})
+      for (const datapackWithTarget of selectedDatapacks) {
+        mainWindow.webContents.send('log-datapack-copy', `Car: ${datapackWithTarget.car}`);
+        console.log({datapackWithTarget});
+        console.log(datapackWithTarget.dataPack);
+        fse.readdirSync(datapackWithTarget.dataPack.sourceFolder).forEach(file => {
+          const sourceFilePath = path.join(datapackWithTarget.dataPack.sourceFolder, file);
+          const targetFilePath = path.join(datapackWithTarget.target, file);
+          fse.copySync(sourceFilePath, targetFilePath, { overwrite: true });
+          mainWindow.webContents.send('log-datapack-copy', `Copied: ${file} to ${targetFilePath}`);
+        });
+      }
+    });
 
   // IPC handler for selecting the setups directory
   ipcMain.handle('select-setups-directory', async () => {

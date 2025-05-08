@@ -37,31 +37,37 @@ function parseCarName(carFolder) {
 }
 
 function parseDatapackName(dataPackFolder) {
-  const map = 
-  {
-    "provider": "GnG",
-    "pattern": "(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]{1,2})\\sW(?<week>[0-9]{2})\\s(?<series>[\\w-]+)\\s[\\w-]+\\s(?<track>.*?)(?: (?<isWet>(WET|Wet)))?$",
-    "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-{series}/{week}-{track}"
-  };
-  const matcherResult = matchSetupPath(dataPackFolder, map, config.mappings.tracks, config.mappings.series);
-  if (matcherResult.result) {
-    if (matcherResult.matches.seasonYear === null || matcherResult.matches.seasonNo === null || matcherResult.matches.week === null || matcherResult.matches.track === null || matcherResult.matches.series === null || matcherResult.matches.isWet === null) {
-      return null;
+  for (let setupJsonMap of config.mappings.setups) {
+    const matcherResult = matchSetupPath(dataPackFolder, setupJsonMap, config.mappings.tracks, config.mappings.series);
+    if (matcherResult.result) {
+      if (matcherResult.matches.seasonYear === null || matcherResult.matches.seasonNo === null || matcherResult.matches.week === null || matcherResult.matches.track === null || matcherResult.matches.series === null || matcherResult.matches.isWet === null) {
+        return null;
+      }
+      const dest = setupJsonMap.destinationTemplate
+        .replace('{seasonYear}', matcherResult.matches.seasonYear)
+        .replace('{seasonNo}', matcherResult.matches.seasonNo)
+        .replace('{series}', matcherResult.matches.series)
+        .replace('{week}', matcherResult.matches.week)
+        .replace('{track}', matcherResult.matches.track)
+        .replace('\\', path.sep);
+      return {
+        seasonYear: matcherResult.matches.seasonYear,
+        seasonNo: matcherResult.matches.seasonNo,
+        week: matcherResult.matches.week,
+        track: matcherResult.matches.track,
+        series: matcherResult.matches.series,
+        isWet: matcherResult.matches.isWet,
+        destFolderTemplate: dest,
+      };
     }
-    return {
-      seasonYear: matcherResult.matches.seasonYear,
-      seasonNo: matcherResult.matches.seasonNo,
-      week: matcherResult.matches.week,
-      track: matcherResult.matches.track,
-      series: matcherResult.matches.series,
-      isWet: matcherResult.matches.isWet,
-    };
   }
   return null;
 }
 
-function loadTargetForDatapack(car, dataPack) {
-  const targetFolder = path.join(car, 'Garage 61 - Motorsports Factory', `S${dataPack.seasonYear}0${dataPack.seasonNo}-${dataPack.series}`, `W${dataPack.week}-${dataPack.track}`);
+function loadTargetForDatapack(car, basePath, dataPack) {
+  const targetFolder = dataPack.destFolderTemplate
+    .replace('{car}', car)
+    .replace('{base}', basePath);
   return targetFolder;
 }
 

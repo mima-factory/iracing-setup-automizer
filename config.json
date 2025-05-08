@@ -34,6 +34,16 @@
         "provider": "P1Doks_PCC",
         "pattern": "^(?<car>[^\\/]+)\\/20(?<seasonYear>[0-9]{2}) - S(?<seasonNo>[0-9]+)\\/(?<track>[^\\/]+) - (?<series>PCC) - (Mazda|BMW M2)\\/.*P1Doks\\_[A-Z0-9a-z]+_[^\\/]+\\.sto$",
         "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-{series}/{week}-{track}"
+      },
+      {
+        "provider": "GnG_ENDU",
+        "pattern": "(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]{1,2})\\sW(?<week>[0-9]{2})\\s(?<series>(NEC)|(Creventic))\\s[\\w-]+\\s(?<track>.*?)(?: (?<isWet>(WET|Wet)))?$",
+        "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-ENDU/{series}/W{week}-{track}"
+      },
+      {
+        "provider": "GnG",
+        "pattern": "(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]{1,2})\\sW(?<week>[0-9]{2})\\s(?<series>[\\w-]+)\\s[\\w-]+\\s(?<track>.*?)(?: (?<isWet>(WET|Wet)))?$",
+        "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-{series}/W{week}-{track}"
       }
     ],
     "gng": {
