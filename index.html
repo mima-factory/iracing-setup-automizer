@@ -112,7 +112,7 @@
         <p class="text-muted small mb-2">This can copy GnG setups from the "Data packs" directories into the Team directories.</p>
         <div class="row">
 
-          <div class="col-md-7">
+          <div class="col-md-6">
             <div class="row">
               <label class="form-label fw-bold">iRacing setups directory</label>
               <div class="input-group">
@@ -130,9 +130,30 @@
             </div>
           </div>
 
-          <div class="col-md-5">
+          <div class="col-md-3">
+            <label for="gngSeasonWeekSelect" class="form-label fw-bold">Season Week</label>
+            <select id="gngSeasonWeekSelect" class="form-select" multiple size="6">
+              <option value="00" disabled selected>Choose week...</option>
+              <option value="01">Week 01</option>
+              <option value="02">Week 02</option>
+              <option value="03">Week 03</option>
+              <option value="04">Week 04</option>
+              <option value="05">Week 05</option>
+              <option value="06">Week 06</option>
+              <option value="07">Week 07</option>
+              <option value="08">Week 08</option>
+              <option value="09">Week 09</option>
+              <option value="10">Week 10</option>
+              <option value="11">Week 11</option>
+              <option value="12">Week 12</option>
+              <option value="13">Week 13</option>
+              <option value="14">Week 14</option>
+            </select>
+          </div>
+
+          <div class="col-md-3">
             <label for="gngSeriesSelect" class="form-label fw-bold">Series</label>
-            <select id="gngSeriesSelect" class="form-select" multiple>
+            <select id="gngSeriesSelect" class="form-select" multiple size="6">
               <option value="0" disabled selected>Choose series to copy...</option>
               <option value="imsa">IMSA</option>
               <option value="gt3">GT3</option>
@@ -141,7 +162,7 @@
               <option value="creventic">Creventic</option>
             </select>
           </div>
-          <button id="loadGngDatapacks" class="btn btn-primary w-100">Load GnG data packs</button>
+          <button id="loadGngDatapacks" class="mt-2 btn btn-primary w-100">Load GnG data packs</button>
         </div>
 
         <div class="row">

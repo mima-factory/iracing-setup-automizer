@@ -3,7 +3,9 @@ const { matchSetupPath } = require('./matcher');
 const path = require('path');
 const config = require('../config.json');
 
-function loadDataPacksForSeries(series, setupsFolder) {
+function loadDataPacksForSeries(filters, setupsFolder) {
+  const series = filters.series
+  const seasonWeeks = filters.weeks;
   const carFolders = fse.readdirSync(setupsFolder);
   const datapacks = {};
   for (const carFolder of carFolders) {
@@ -25,7 +27,7 @@ function loadDataPacksForSeries(series, setupsFolder) {
     }
 
     datapacks[car].dataPacks = datapacks[car].dataPacks.filter((dataPack) => {
-      return series.includes(dataPack.series);
+      return series.includes(dataPack.series) && seasonWeeks.includes(dataPack.week);
     });
   }
 

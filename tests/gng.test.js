@@ -92,12 +92,12 @@ test('parseDatapackName parses WET/Wet track', () => {
   expect(result.isWet).toBe(true);
 });
 
-test('loadDataPacksForSeries filters by series', () => {
+test('loadDataPacksForSeries filters by single series and multiple weeks', () => {
   const series = 'IMSA';
   const setupsFolder = 'tests/testSetupsFolder';
   const expectedCar = 'bmwm4gt3';
 
-  const result = loadDataPacksForSeries([series], setupsFolder);
+  const result = loadDataPacksForSeries({series:[series], weeks: ['05', '06']}, setupsFolder);
 
   expect(result).not.toBeNull();
   expect(result[expectedCar]).not.toBeNull();
@@ -109,13 +109,22 @@ test('loadDataPacksForSeries filters by series', () => {
   }
 });
 
-test('loadDataPacksForSeries filters by multiple series', () => {
+test('loadDataPacksForSeries filters by multiple series and weeks', () => {
   const setupsFolder = 'tests/testSetupsFolder';
   const expectedCar = 'bmwm4gt3';
 
-  const result = loadDataPacksForSeries(['IMSA', 'GT3'], setupsFolder);
+  const result = loadDataPacksForSeries({series: ['IMSA', 'GT3'], weeks: ['05','06']}, setupsFolder);
 
   expect(result[expectedCar].dataPacks.length).toBe(3);
+});
+
+test('loadDataPacksForSeries filters by single week', () => {
+  const setupsFolder = 'tests/testSetupsFolder';
+  const expectedCar = 'bmwm4gt3';
+
+  const result = loadDataPacksForSeries({'series': ['IMSA', 'GT3'], weeks: ['05']}, setupsFolder);
+
+  expect(result[expectedCar].dataPacks.length).toBe(2);
 });
 
 test('loadTargetForDatapack generates target folder', () => {

@@ -96,14 +96,21 @@ document.getElementById('processSetupArchiveButton').addEventListener('click', a
 });
 
 document.getElementById('loadGngDatapacks').addEventListener('click', async () => {
-  const selectedElement = document.getElementById('gngSeriesSelect');
-  const selectedSeries = Array.from(selectedElement.options).filter(function (option) {
+  const selectedSeasonWeekElement = document.getElementById('gngSeasonWeekSelect');
+  const selectedSeasonWeeks = Array.from(selectedSeasonWeekElement.options).filter(function (option) {
     return option.selected;
   }).map(function (option) {
     return option.value;
   });
 
-  await ipcRenderer.invoke('load-gng-datapacks', selectedSeries);
+  const selectedSeriesElement = document.getElementById('gngSeriesSelect');
+  const selectedSeries = Array.from(selectedSeriesElement.options).filter(function (option) {
+    return option.selected;
+  }).map(function (option) {
+    return option.value;
+  });
+
+  await ipcRenderer.invoke('load-gng-datapacks', selectedSeries, selectedSeasonWeeks);
 });
 
 document.getElementById('copyGngDatapacks').addEventListener('click', async () => {

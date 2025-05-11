@@ -109,7 +109,7 @@ app.whenReady().then(() => {
     }
   });
 
-  ipcMain.handle('load-gng-datapacks', async (_, selectedSeries) => {
+  ipcMain.handle('load-gng-datapacks', async (_, selectedSeries, selectedSeasonWeeks) => {
     let seriesFilter = [];
     for (const series of selectedSeries) {
       for (const [key, value] of Object.entries(config.mappings.gng.series)) {
@@ -119,7 +119,12 @@ app.whenReady().then(() => {
       }
     }
 
-    const foundDatapacks = loadDataPacksForSeries(seriesFilter, setupsDirectory, targetDirectory);
+    const filter = {
+      series: seriesFilter,
+      weeks: selectedSeasonWeeks,
+    }
+
+    const foundDatapacks = loadDataPacksForSeries(filter, setupsDirectory, targetDirectory);
     validDatapacksWithTargets = [];
 
     mainWindow.webContents.send('log-message', `Selected GnG series: ${selectedSeries}`);
