@@ -27,7 +27,10 @@ function loadDataPacksForSeries(filters, setupsFolder) {
     }
 
     datapacks[car].dataPacks = datapacks[car].dataPacks.filter((dataPack) => {
-      return series.includes(dataPack.series) && seasonWeeks.includes(dataPack.week);
+      return series.includes(dataPack.series)
+        && seasonWeeks.includes(dataPack.week)
+        && dataPack.seasonYear === config.general.currentSeasonYear
+        && dataPack.seasonNo === config.general.currentSeasonNo;
     });
   }
 

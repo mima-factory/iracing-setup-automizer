@@ -1,7 +1,9 @@
 {
   "general": {
     "week": "W00",
-    "extractionDir": "extraction-dir"
+    "extractionDir": "extraction-dir",
+    "currentSeasonYear": "25",
+    "currentSeasonNo": "2"
   },
   "mappings": {
     "setups": [
