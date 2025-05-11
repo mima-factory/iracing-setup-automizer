@@ -55,6 +55,9 @@ window.api.onShowGngDatapacks(datapacksWithTargets => {
     carOption.appendChild(option);
   }
 
+  if (carOption !== null) {
+    selectElement.add(carOption);  
+  }
 });
 
 const ipcRenderer = window.electron.ipcRenderer;
