@@ -3,7 +3,7 @@
     "week": "W00",
     "extractionDir": "extraction-dir",
     "currentSeasonYear": "25",
-    "currentSeasonNo": "2"
+    "currentSeasonNo": "3"
   },
   "mappings": {
     "setups": [
@@ -116,9 +116,10 @@
       "nuerburgring gp": "Nurburgring-GP",
       "nurburgring gp": "Nurburgring-GP",
       "okayama": "Okayama",
-      "oulton park": "Oulton Park",
-      "oulton": "Oulton Park",
-      "oultonpark": "Oulton Park",
+      "oulton park": "Oulton-Park",
+      "oulton": "Oulton-Park",
+      "oultonpark": "Oulton-Park",
+      "oran park": "Oran-Park",
       "petit le mans": "Road-Atlanta",
       "phillip island": "Phillip-Island",
       "portimao": "Portimao",
@@ -145,6 +146,8 @@
       "summit": "Summit-Point",
       "suzuka grandprix": "Suzuka",
       "suzuka": "Suzuka",
+      "the bend": "The-Bend",
+      "bend": "The-Bend",
       "thruxton": "Thruxton",
       "vir": "Virginia",
       "virginia grand": "Virginia",
