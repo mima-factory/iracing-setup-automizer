@@ -3,14 +3,19 @@ const { matchSetupPath } = require('./matcher');
 const path = require('path');
 const config = require('../config.json');
 
-function loadDataPacksForSeries(filters, setupsFolder) {
+function loadDataPacksForSeries(
+  filters,
+  setupsFolder,
+  currentSeasonYear = config.general.currentSeasonYear, // Only used for testing, otherwise use config
+  currentSeasonNo = config.general.currentSeasonNo, // Only used for testing, otherwise use config
+) {
   const series = filters.series
   const seasonWeeks = filters.weeks;
   const carFolders = fse.readdirSync(setupsFolder);
   const datapacks = {};
   for (const carFolder of carFolders) {
     let carDatapacksFolder = path.join(setupsFolder, carFolder, 'Garage 61', 'Data Packs');
-    console.log(carDatapacksFolder);
+
     if (!fse.existsSync(carDatapacksFolder)) continue;
     let car = parseCarName(carFolder);
     datapacks[car] = {
@@ -29,8 +34,8 @@ function loadDataPacksForSeries(filters, setupsFolder) {
     datapacks[car].dataPacks = datapacks[car].dataPacks.filter((dataPack) => {
       return series.includes(dataPack.series)
         && seasonWeeks.includes(dataPack.week)
-        && dataPack.seasonYear === config.general.currentSeasonYear
-        && dataPack.seasonNo === config.general.currentSeasonNo;
+        && dataPack.seasonYear === currentSeasonYear
+        && dataPack.seasonNo === currentSeasonNo;
     });
   }
 
@@ -44,8 +49,10 @@ function parseCarName(carFolder) {
 function parseDatapackName(dataPackFolder) {
   for (let setupJsonMap of config.mappings.setups) {
     const matcherResult = matchSetupPath(dataPackFolder, setupJsonMap, config.mappings.tracks, config.mappings.series);
+
     if (matcherResult.result) {
       if (matcherResult.matches.seasonYear === null || matcherResult.matches.seasonNo === null || matcherResult.matches.week === null || matcherResult.matches.track === null || matcherResult.matches.series === null || matcherResult.matches.isWet === null) {
+        console.error(`Incomplete match for data pack: ${dataPackFolder}`);
         return null;
       }
       const dest = setupJsonMap.destinationTemplate
@@ -55,6 +62,7 @@ function parseDatapackName(dataPackFolder) {
         .replace('{week}', matcherResult.matches.week)
         .replace('{track}', matcherResult.matches.track)
         .replace('\\', path.sep);
+
       return {
         seasonYear: matcherResult.matches.seasonYear,
         seasonNo: matcherResult.matches.seasonNo,

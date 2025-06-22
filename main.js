@@ -124,7 +124,7 @@ app.whenReady().then(() => {
       weeks: selectedSeasonWeeks,
     }
 
-    const foundDatapacks = loadDataPacksForSeries(filter, setupsDirectory, targetDirectory);
+    const foundDatapacks = loadDataPacksForSeries(filter, setupsDirectory);
     validDatapacksWithTargets = [];
 
     mainWindow.webContents.send('log-message', `Selected GnG series: ${selectedSeries}`);

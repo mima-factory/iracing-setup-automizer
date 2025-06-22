@@ -3,10 +3,10 @@ function matchSetupPath(setupPath, map, trackMapJson, seriesMapJson) {
   const validationErrors = [];
   const regex = new RegExp(map.pattern);
   const match = setupPath.match(regex);
-  if (!match || match.length < 6) {
 
-    console.log(`No pattern match for entry: ${setupPath}`);
-    console.log(`match: ${match}`);
+  if (!match || match.length < 6) {
+    ///console.log(`No pattern match for entry: ${setupPath}`);
+    //console.log(`match: ${match}`);
     return {
       "result": false,
       "validationErrors": ["No pattern match for entry: " + setupPath],
@@ -27,13 +27,14 @@ function matchSetupPath(setupPath, map, trackMapJson, seriesMapJson) {
   const seriesMap = generateMap(seriesMapJson);
   const track = findMatchForNormalizedValue(normalizedTrack, trackMap);
   const series = findMatchForNormalizedValue(normalizedSeries, seriesMap);
+
   if (track === false) {
-    console.log(`Track not found in map: ${parsedTrack} -> ${normalizedTrack}`);
+    // console.log(`Track not found in map: ${parsedTrack} -> ${normalizedTrack}`);
     success = false;
     validationErrors.push(`Track not found in map: ${normalizedTrack}`);
   }
   if (series === false) {
-    console.log(`Series not found in map: ${parsedSeries} -> ${normalizedSeries}`);
+    // console.log(`Series not found in map: ${parsedSeries} -> ${normalizedSeries}`);
     success = false;
     validationErrors.push(`Series not found in map: ${normalizedSeries}`);
   }

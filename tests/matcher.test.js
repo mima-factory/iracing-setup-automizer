@@ -102,3 +102,29 @@ test('matchSetupPath for GnG', () => {
   expect(result.matches.track).toBe('Oschersleben');
   expect(result.matches.series).toBe('SPORTSCAR');
 });
+
+test('matchSetupPath for GnG Watkins6H, which has no track part in the match, so we use a', () => {
+  const setupPath = '25S3 W02 Watkins6H Acura';
+  const map = {
+    pattern: /(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]{1,2})\sW(?<week>[0-9]{2})\s(?<series>(?<track>Watkins)6H)\s[\w-]+(?<ignorecars>(BMW)|(Porsche))*(?: (?<isWet>(WET|Wet)))?$/,
+  };
+  const config = {
+    mappings: {
+      tracks: {
+        'watkins': 'Watkins-Glen',
+      },
+      series: {
+        'watkins6h': 'Watkins-6h',
+      },
+    },
+  };
+  const result = matchSetupPath(setupPath, map, config.mappings.tracks, config.mappings.series);
+
+  expect(result.result).toBe(true);
+  expect(result.matches.car).toBe(undefined);
+  expect(result.matches.seasonYear).toBe('25');
+  expect(result.matches.seasonNo).toBe('3');
+  expect(result.matches.week).toBe('02');
+  expect(result.matches.series).toBe('Watkins-6h');
+  expect(result.matches.track).toBe('Watkins-Glen');
+});

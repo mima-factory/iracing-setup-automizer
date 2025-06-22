@@ -97,7 +97,7 @@ test('loadDataPacksForSeries filters by single series and multiple weeks', () =>
   const setupsFolder = 'tests/testSetupsFolder';
   const expectedCar = 'bmwm4gt3';
 
-  const result = loadDataPacksForSeries({series:[series], weeks: ['05', '06']}, setupsFolder);
+  const result = loadDataPacksForSeries({series:[series], weeks: ['05', '06']}, setupsFolder, '25', '2');
 
   expect(result).not.toBeNull();
   expect(result[expectedCar]).not.toBeNull();
@@ -113,7 +113,7 @@ test('loadDataPacksForSeries filters by multiple series and weeks', () => {
   const setupsFolder = 'tests/testSetupsFolder';
   const expectedCar = 'bmwm4gt3';
 
-  const result = loadDataPacksForSeries({series: ['IMSA', 'GT3'], weeks: ['05','06']}, setupsFolder);
+  const result = loadDataPacksForSeries({series: ['IMSA', 'GT3'], weeks: ['05','06']}, setupsFolder, '25', '2');
 
   expect(result[expectedCar].dataPacks.length).toBe(3);
 });
@@ -122,7 +122,7 @@ test('loadDataPacksForSeries filters by single week', () => {
   const setupsFolder = 'tests/testSetupsFolder';
   const expectedCar = 'bmwm4gt3';
 
-  const result = loadDataPacksForSeries({'series': ['IMSA', 'GT3'], weeks: ['05']}, setupsFolder);
+  const result = loadDataPacksForSeries({'series': ['IMSA', 'GT3'], weeks: ['05']}, setupsFolder, '25', '2');
 
   expect(result[expectedCar].dataPacks.length).toBe(2);
 });

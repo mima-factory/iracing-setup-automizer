@@ -43,6 +43,11 @@
         "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-ENDU/NOS-24"
       },
       {
+        "provider": "GnG_Watkins6H",
+        "pattern": "(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]{1,2})\\sW(?<week>[0-9]{2})\\s(?<series>(?<track>Watkins)6H)\\s[\\w-]+(?<ignorecars>(BMW)|(Porsche))*(?: (?<isWet>(WET|Wet)))?$",
+        "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-ENDU/Watkins-6h"
+      },
+      {
         "provider": "GnG_ENDU",
         "pattern": "(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]{1,2})\\sW(?<week>[0-9]{2})\\s(?<series>(NEC)|(Creventic))\\s[\\w-]+\\s(?<ignorecars>(BMW)|(Porsche))*\\s*(?<track>.*?)(?: (?<isWet>(WET|Wet)))?$",
         "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-ENDU/{series}/W{week}-{track}"
@@ -61,7 +66,8 @@
         "pcup": ["PCUP"],
         "nec": ["NEC"],
         "creventic": ["Creventic"],
-        "nbr24h": ["NBR24H"]
+        "nbr24h": ["NBR24H"],
+        "watkins6h": ["Watkins6H"]
       }
     },
     "tracks": {
@@ -152,7 +158,6 @@
       "vir": "Virginia",
       "virginia grand": "Virginia",
       "virginia": "Virginia",
-      "watkins 6": "Watkins-Glen",
       "watkins boot": "Watkins-Glen",
       "watkins glen": "Watkins-Glen",
       "watkins classic": "Watkins-Glen",
@@ -184,7 +189,8 @@
       "mx5": "MX5",
       "nec": "NEC",
       "creventic": "Creventic",
-      "nbr24h": "NBR24H"
+      "nbr24h": "NBR24H",
+      "watkins6h": "Watkins6H"
     }
   }
 }
