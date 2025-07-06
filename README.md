@@ -99,6 +99,15 @@ npm run dist
 
 - Generates Windows-specific installers under `dist/`.  
 
+
+### How to add a new special event for GnG
+
+1. Add it to `index.html` in the select for events
+2. Add it to the `config.json`
+   1. New setups mapping
+   2. New series in gng
+   3. New series in general (both is required, gng and general, looks like tech debt)
+
 ---
 
 ## ❤️ Contributing
