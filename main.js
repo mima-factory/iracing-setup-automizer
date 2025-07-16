@@ -62,7 +62,7 @@ app.whenReady().then(() => {
   ipcMain.handle('select-setup-archive', async () => {
     console.log('Selecting setup archive...');
     const result = dialog.showOpenDialogSync({
-      properties: ['openFile', 'multiSelections', 'dontAddToRecent', 'openDirectory'],
+      properties: ['openFile', 'multiSelections', 'dontAddToRecent'],
       buttonLabel: 'Select Setup Archive',
       title: 'Select Setup Archive',
       filters: [
