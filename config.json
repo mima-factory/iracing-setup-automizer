@@ -53,8 +53,13 @@
         "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-ENDU/Watkins-6h"
       },
       {
+        "provider": "GnG_ENDU_special_cars",
+        "pattern": "(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]{1,2})\\sW(?<week>[0-9]{2})\\s(?<series>(NEC)|(Creventic))\\s(?<ignorecars>(?:(Mercedes GT4)|(BMW)|(Porsche))\\s)?(?<track>.*?)(?: (?<isWet>(WET|Wet)))?(?: (?<pcup>PCUP))?$",
+        "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-ENDU/{series}/W{week}-{track}"
+      },
+      {
         "provider": "GnG_ENDU",
-        "pattern": "(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]{1,2})\\sW(?<week>[0-9]{2})\\s(?<series>(NEC)|(Creventic))\\s[\\w-]+\\s(?<ignorecars>(BMW)|(Porsche))*\\s*(?<track>.*?)(?: (?<isWet>(WET|Wet)))?$",
+        "pattern": "(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]{1,2})\\sW(?<week>[0-9]{2})\\s(?<series>(NEC)|(Creventic))\\s[\\w-]+\\s(?<ignorecars>(BMW)|(Porsche)|(Mercedes GT4))*\\s*(?<track>.*?)(?: (?<isWet>(WET|Wet)))?(?: (?<pcup>PCUP))?$",
         "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-ENDU/{series}/W{week}-{track}"
       },
       {
@@ -112,6 +117,7 @@
       "lime rock legacy": "Lime-Rock",
       "lime rock": "Lime-Rock",
       "long beach": "Long-Beach",
+      "magny cours": "Magny-Cours",
       "mid ohia": "Mid-Ohio",
       "misano": "Misano",
       "montreal": "Montreal",
