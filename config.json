@@ -3,7 +3,9 @@
     "week": "W00",
     "extractionDir": "extraction-dir",
     "currentSeasonYear": "25",
-    "currentSeasonNo": "3"
+    "currentSeasonNo": "3",
+    "defaultSetupDir": "C:\\Users\\Martin\\Documents\\iRacing\\setups",
+    "defaultCopyToDir": "C:\\Users\\Martin\\Downloads\\iRacingSetupAutomizer_GnG"
   },
   "mappings": {
     "setups": [
@@ -53,6 +55,11 @@
         "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-ENDU/Watkins-6h"
       },
       {
+        "provider": "GnG_Indy6H",
+        "pattern": "(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]{1,2})\\sW(?<week>[0-9]{2})\\s(?<series>(?<track>Indy)6h)\\s[\\w-]+(?<ignorecars>(BMW)|(Porsche))*(?: (?<isWet>(WET|Wet)))?$",
+        "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-ENDU/Indy-6h"
+      },
+      {
         "provider": "GnG_ENDU_special_cars",
         "pattern": "(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]{1,2})\\sW(?<week>[0-9]{2})\\s(?<series>(NEC)|(Creventic))\\s(?<ignorecars>(?:(Mercedes GT4)|(BMW)|(Porsche))\\s)?(?<track>.*?)(?: (?<isWet>(WET|Wet)))?(?: (?<pcup>PCUP))?$",
         "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-ENDU/{series}/W{week}-{track}"
@@ -78,6 +85,7 @@
         "creventic": ["Creventic"],
         "nbr24h": ["NBR24H"],
         "watkins6h": ["Watkins6H"],
+        "indy6h": ["Indy6h"],
         "spa24": ["Spa24"]
       }
     },
@@ -106,6 +114,7 @@
       "imola": "Imola",
       "indianapolis": "Indianapolis",
       "indy 6": "Indy 6",
+      "indy": "Indianapolis",
       "interlagos": "Interlagos",
       "interlagos gp": "Interlagos",
       "jerez": "Jerez",
@@ -205,7 +214,8 @@
       "creventic": "Creventic",
       "nbr24h": "NBR24H",
       "watkins6h": "Watkins6H",
-      "spa24": "Spa24"
+      "spa24": "Spa24",
+      "indy6h": "Indy6h"
     }
   }
 }

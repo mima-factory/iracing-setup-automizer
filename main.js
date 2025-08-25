@@ -12,6 +12,14 @@ let validDatapacksWithTargets = [];
 let setupsDirectory = '';
 let targetDirectory = '';
 
+if (config.general.defaultSetupDir) {
+  setupsDirectory = config.general.defaultSetupDir;
+}
+
+if (config.general.defaultCopyToDir) {
+  targetDirectory = config.general.defaultCopyToDir;
+}
+
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 1024,
