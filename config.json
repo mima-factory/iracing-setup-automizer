@@ -2,8 +2,8 @@
   "general": {
     "week": "W00",
     "extractionDir": "extraction-dir",
-    "currentSeasonYear": "25",
-    "currentSeasonNo": "4",
+    "currentSeasonYear": "26",
+    "currentSeasonNo": "1",
     "defaultSetupDir": "C:\\Users\\Martin\\Documents\\iRacing\\setups",
     "defaultCopyToDir": "C:\\Users\\Martin\\Downloads\\iRacingSetupAutomizer_GnG"
   },
@@ -107,6 +107,7 @@
       }
     },
     "tracks": {
+      "adelaide": "Adelaide",
       "algarve": "Algarve",
       "aragon": "Aragon",
       "barber": "Barber",
@@ -145,6 +146,7 @@
       "long beach": "Long Beach",
       "magny cours": "Magny Cours",
       "mexico": "Mexico",
+      "miami": "Miami",
       "mid ohia": "Mid Ohio",
       "misano": "Misano",
       "montreal": "Montreal",
