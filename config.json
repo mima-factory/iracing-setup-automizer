@@ -45,8 +45,8 @@
         "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-ENDU/Roar"
       },
       {
-        "provider": "GnG_D24h",
-        "pattern": "(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]{1,2})\\sW(?<week>[0-9]{2})\\s(?<series>Daytona24h)\\s[\\w-]+\\s(?<ignorecars>(BMW)|(Porsche))*\\s*(?<track>.*?)(?: (?<isWet>(WET|Wet)))?$",
+        "provider": "GnG_Daytona24",
+        "pattern": "(?<seasonYear>[0-9]{2})S(?<seasonNo>[0-9]{1,2})\\sW(?<week>[0-9]{2})\\s(?<series>(?<track>Daytona)24)\\s[\\w-]+\\s*(?<ignorecars>(BMW)|(Porsche))*\\s*(?: (?<isWet>(WET|Wet)))?$",
         "destinationTemplate": "{base}/{car}/Garage 61 - Motorsports Factory/S{seasonYear}0{seasonNo}-ENDU/Daytona-24"
       },
       {
@@ -109,7 +109,7 @@
         "nec": ["NEC"],
         "creventic": ["Creventic"],
         "roar": ["Roar"],
-        "daytona24h": ["Daytona24h"],
+        "daytona24": ["Daytona24"],
         "nbr24h": ["NBR24H"],
         "watkins6h": ["Watkins6H"],
         "indy6h": ["Indy6h"],
@@ -253,7 +253,7 @@
       "nec": "NEC",
       "creventic": "Creventic",
       "roar": "Roar",
-      "daytona24h": "Daytona24h",
+      "daytona24": "Daytona24",
       "nbr24h": "NBR24H",
       "watkins6h": "Watkins6H",
       "spa24": "Spa24",
